@@ -1,0 +1,6 @@
+# Aptana
+.settings/**
+.project
+
+# Do not include the vendor libraries
+vendor/**
