@@ -43,6 +43,8 @@ object in your theme's view files.
 
 ### Example of outputting a URL for preprocessed CSS files
 
+Within your theme files you can use the following snippet:
+
 ```php
 <?php echo $assets->css(array(
     'main.less',
@@ -59,6 +61,8 @@ by providing the preprocessing filters for them. This package only comes with
 Less and SCSS preprocessing filters.
 
 ### Example of outputting a URL for preprocessed JS files
+
+Within your theme files you can use the following snippet:
 
 ```php
 <?php echo $assets->js(array(
