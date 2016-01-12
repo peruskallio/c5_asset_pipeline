@@ -80,7 +80,7 @@ class FilterProvider extends ServiceProvider
     public function setFilters()
     {
         $manager = Core::make('assets/manager');
-        $filters = Config::get('assets.filters');
+        $filters = Config::get('app.asset_filters');
         if (is_array($filters)) {
             foreach ($filters as $key => $options) {
                 $manager->setFilter($key, $options);

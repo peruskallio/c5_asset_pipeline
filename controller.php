@@ -48,9 +48,9 @@ class Controller extends Package
 
         // The filter definitions can be overridden by the site configs, so
         // first check whether they are set or not.
-        if (!Config::has('assets.filters')) {
+        if (!Config::has('app.asset_filters')) {
             // Set the default filter options
-            Config::set('assets.filters', array(
+            Config::set('app.asset_filters', array(
                 'less' => array(
                     'applyTo' => '\.less$',
                     'customizableStyles' => true,
