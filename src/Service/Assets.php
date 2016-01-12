@@ -168,7 +168,7 @@ class Assets
         $factory = $this->getAssetFactory();
         $fm = $factory->getFilterManager();
 
-        $filters = Config::get('assets.filters');
+        $filters = Core::make('assets/manager')->getFilters();
         $assets = new \Assetic\Asset\AssetCollection();
         foreach ($filters as $key => $flt) {
             if (!Core::bound('assets/filter/' . $key)) {

@@ -65,7 +65,6 @@ class PackageServiceProvider extends ServiceProvider
             'Concrete\\Core\\StyleCustomizer\\Style\\ColorStyle' => DIR_PACKAGES . '/' . $this->pkgHandle . '/src/Core/StyleCustomizer/Style/ColorStyle.php',
             'Concrete\\Core\\StyleCustomizer\\Style\\ImageStyle' => DIR_PACKAGES . '/' . $this->pkgHandle . '/src/Core/StyleCustomizer/Style/ImageStyle.php',
             'Concrete\\Core\\StyleCustomizer\\Style\\SizeStyle' => DIR_PACKAGES . '/' . $this->pkgHandle . '/src/Core/StyleCustomizer/Style/SizeStyle.php',
-            'Concrete\\Core\\StyleCustomizer\\Style\\Style' => DIR_PACKAGES . '/' . $this->pkgHandle . '/src/Core/StyleCustomizer/Style/Style.php',
             'Concrete\\Core\\StyleCustomizer\\Style\\TypeStyle' => DIR_PACKAGES . '/' . $this->pkgHandle . '/src/Core/StyleCustomizer/Style/TypeStyle.php',
             'Concrete\\Core\\StyleCustomizer\\Style\\ValueList' => DIR_PACKAGES . '/' . $this->pkgHandle . '/src/Core/StyleCustomizer/Style/ValueList.php',
         ));

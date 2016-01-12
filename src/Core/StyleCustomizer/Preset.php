@@ -3,6 +3,7 @@ namespace Concrete\Core\StyleCustomizer;
 
 use Concrete\Core\StyleCustomizer\Style\ColorStyle;
 use Config;
+use Core;
 
 class Preset
 {
@@ -91,7 +92,7 @@ class Preset
      */
     public static function getFromFile($file, $urlroot)
     {
-        $extractor = \Concrete\Core\StyleCustomizer\Style\Style::getValueExtractorForFile($file, $urlroot);
+        $extractor = Core::make('assets/manager')->getValueExtractorForFile($file, $urlroot);
         if (!is_object($extractor)) {
             return null;
         }

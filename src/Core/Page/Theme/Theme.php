@@ -204,7 +204,7 @@ class Theme extends Object
     {
         $env = Environment::get();
         if ($this->isThemeCustomizable()) {
-            $extensions = \Concrete\Core\StyleCustomizer\Style\Style::getFileExtensionsForCustomizableStyles();
+            $extensions = Core::make('assets/manager')->getFileExtensionsForCustomizableStyles();
             foreach ($extensions as $ext) {
                 $file = $env->getRecord(
                     DIRNAME_THEMES.'/'.$this->getThemeHandle(
@@ -248,7 +248,7 @@ class Theme extends Object
             $dh = Loader::helper('file');
             $files = $dh->getDirectoryContents($directory);
             foreach ($files as $f) {
-                if (\Concrete\Core\StyleCustomizer\Style\Style::canFileContainCustomizableStyles($f)) {
+                if (Core::make('assets/manager')->canFileContainCustomizableStyles($f)) {
                     $preset = Preset::getFromFile($directory.'/'.$f, $urlroot);
                     if (is_object($preset)) {
                         $presets[] = $preset;
@@ -304,7 +304,7 @@ class Theme extends Object
             $dh = Loader::helper('file');
             $files = $dh->getDirectoryContents($directory);
             foreach ($files as $f) {
-                if (\Concrete\Core\StyleCustomizer\Style\Style::canFileContainCustomizableStyles($f)) {
+                if (Core::make('assets/manager')->canFileContainCustomizableStyles($f)) {
                     $sheets[] = $this->getStylesheetObject($f);
                 }
             }

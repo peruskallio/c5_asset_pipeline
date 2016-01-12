@@ -2,6 +2,7 @@
 namespace Concrete\Core\StyleCustomizer\Style;
 
 use Concrete\Core\StyleCustomizer\Style\Value\BasicValue;
+use Core;
 use Less_Parser;
 use Database;
 use Symfony\Component\HttpFoundation\ParameterBag;
@@ -85,7 +86,7 @@ class ValueList
 
     public static function loadFromFile($file, $urlroot = false)
     {
-        $extractor = Style::getValueExtractorForFile($file, $urlroot);
+        $extractor = Core::make('assets/manager')->getValueExtractorForFile($file, $urlroot);
         if (!is_object($extractor)) {
             throw new \Exception(t("Invalid file for value extraction: %s", $file));
         }

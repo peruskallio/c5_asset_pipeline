@@ -49,6 +49,7 @@ class Controller extends Package
         // The filter definitions can be overridden by the site configs, so
         // first check whether they are set or not.
         if (!Config::has('assets.filters')) {
+            // Set the default filter options
             Config::set('assets.filters', array(
                 'less' => array(
                     'applyTo' => '\.less$',
@@ -66,6 +67,7 @@ class Controller extends Package
 
         $fp = new FilterProvider($app);
         $fp->register();
+        $fp->setFilters();
     }
 
     protected function loadDependencies()

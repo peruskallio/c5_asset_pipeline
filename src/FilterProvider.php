@@ -12,6 +12,9 @@ class FilterProvider extends ServiceProvider
 
     public function register()
     {
+        // Register the filter manager singleton
+        $this->app->singleton('assets/manager', '\Concrete\Package\AssetPipeline\Src\Asset\Manager');
+
         // Register Less filter & variable value extractor
         Core::bind('assets/filter/less', function($app, $assets) {
             $lessf = new \Concrete\Package\AssetPipeline\Src\Asset\Assetic\Filter\LessphpFilter(
@@ -71,6 +74,17 @@ class FilterProvider extends ServiceProvider
                 $jsf = new \Concrete\Package\AssetPipeline\Src\Asset\Assetic\Filter\JShrinkFilter();
                 return $jsf;
             });
+        }
+    }
+
+    public function setFilters()
+    {
+        $manager = Core::make('assets/manager');
+        $filters = Config::get('assets.filters');
+        if (is_array($filters)) {
+            foreach ($filters as $key => $options) {
+                $manager->setFilter($key, $options);
+            }
         }
     }
 
