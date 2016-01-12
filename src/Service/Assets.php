@@ -16,16 +16,10 @@ class Assets
     protected $context;
     protected $themeBasePath;
     protected $stylesheetVariables = array();
-    protected $sourceUriRoot;
 
     public function __construct()
     {
         $this->setThemeContext();
-    }
-
-    public function setSourceUriRoot($uri)
-    {
-        $this->sourceUriRoot = $uri;
     }
 
     public function setThemeContext($theme = null)
@@ -124,8 +118,6 @@ class Assets
             $assetPaths[$k] = $path;
         }
 
-        // TODO: How to fix the relative paths in the CSS
-        // $this->sourceUriRoot
         $assets = $this->getAssetCollection($assetPaths);
         return $assets->dump();
     }

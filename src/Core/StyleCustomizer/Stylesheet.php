@@ -39,7 +39,6 @@ class Stylesheet
     public function getCss()
     {
         $assets = Core::make('asset_pipeline/helper/assets');
-        $assets->setSourceUriRoot($this->sourceUriRoot);
 
         if (isset($this->valueList) && $this->valueList instanceof \Concrete\Core\StyleCustomizer\Style\ValueList) {
             $variables = array();

@@ -24,7 +24,7 @@ class FilterProvider extends ServiceProvider
                     'sourceMap' => !Config::get('concrete.theme.compress_preprocessor_output') && !!Config::get('concrete.theme.generate_less_sourcemap'),
                 )
             );
-            if (Config::get('assets.less.legacy_url_support', false)) {
+            if (Config::get('app.asset_filter_options.less.legacy_url_support', false)) {
                 $lessf->setBasePath('/' . ltrim($app['app_relative_path'], '/'));
                 $lessf->setRelativeUrlPaths(true);
             }
