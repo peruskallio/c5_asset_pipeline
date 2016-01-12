@@ -82,6 +82,74 @@ implementation for that language and enabling that filter would require
 installing external components on the computer which might require some level
 of technical expertise.
 
+## Relative paths within the CSS
+
+In the CSS you quite often need to reference static files from the file system,
+such as images, font files, etc. Traditionally in concrete5, the Less files
+within your theme's folder referenced the relative folders within the theme
+automatically by replacing all the paths with the relative paths automatically.
+However, we think this is a bad design decision as it limits the paths that can
+be referenced from the themes and also might work differently with different
+filters and some filters might not even implement this feature.
+
+Instead, the built-in filters within this package provide an alternative way of
+referencing the static assets within the CSS files. This is through custom
+functions that can be used within the CSS files. This is implemented for both
+filters, the Less filter and the SCSS filter.
+
+To reference the static assets in different sections of the system, the
+following functions are available within your CSS files (in both `.less` and
+`.scss` files):
+
+```scss
+.current-theme {
+    /* Reference an image within the active theme for the current page */
+    background-image: theme-asset-url('images/your-background-image.jpg');
+}
+.other-theme {
+    /* Reference an image within another theme */
+    background-image: theme-asset-url('images/your-background-image.jpg', 'theme_handle');
+}
+.application {
+    /* Reference an image within the application folder */
+   background-image: asset-url('images/your-background-image.jpg');
+}
+.core {
+    /* Reference an image within the core folder */
+   background-image: core-asset-url('images/your-background-image.jpg');
+}
+.package {
+    /* Reference an image within a package folder */
+   background-image: package-asset-url('images/your-background-image.jpg', 'package_handle');
+}
+```
+
+In case you somewhere need only the paths of the assets, you can swap the
+`-url` suffix with `-path` in the function names to skip printing out the
+`url()` part of the resulting string.
+
+### Enabling the relative path replacing
+
+If you are using the assets pipeline with any existing concrete5 themes, they
+might be also relying on the concrete5's internal functionality that it
+automatically swaps out all the relative URLs within the Less files. If you
+want to enable this feature with the assets pipeline, you can set the following
+configuration variable in your `application/config/app.php`:
+
+```php
+<?php
+// Within your 'application/config/app.php' configuration file
+return array(
+    // ... you may have other configuration variables here ...
+    'asset_filter_options' => array(
+        'less' => array(
+            'legacy_url_support' => true
+        ),
+    ),
+    // ... and you may have other configuration variables also here ...
+);
+```
+
 ## Filters
 
 Currently this package provides the followign filters:
@@ -140,20 +208,18 @@ the exact same filters as the default configurations provide:
 // Within your 'application/config/app.php' configuration file
 return array(
     // ... you may have other configuration variables here ...
-    'asset' => array(
-        'filters' => array(
-            'less' => array(
-                'applyTo' => '\.less$',
-                'customizableStyles' => true,
-            ),
-            'scss' => array(
-                'applyTo' => '\.scss$',
-                'customizableStyles' => true,
-            ),
-            'js' => array(
-                'applyTo' => '\.js$',
-            ),
-        )
+    'asset_filters' => array(
+        'less' => array(
+            'applyTo' => '\.less$',
+            'customizableStyles' => true,
+        ),
+        'scss' => array(
+            'applyTo' => '\.scss$',
+            'customizableStyles' => true,
+        ),
+        'js' => array(
+            'applyTo' => '\.js$',
+        ),
     ),
     // ... and you may have other configuration variables also here ...
 );
