@@ -100,18 +100,82 @@ New filters (e.g. for CoffeeScript) can be added through configuration.
 
 New filters may be easily added for this package.
 
-Currently you can take a look at the
-`Concrete\Package\AssetPipeline\Src\FilterProvider` class which registers the
-currently available built-in filters.
+For adding a new filter, you can take a look at the
+`Concrete\Package\AssetPipeline\Src\FilterProvider` class which registers and
+builds the currently available built-in filters. All filters need to implement
+the `Assetic\Filter\FilterInterface` or one of its extensions in order to work
+properly with [Assetic](https://github.com/kriswallsmith/assetic) which handles
+the file output filtering.
 
-In addition, you will also need to edit the `assets.filters` configuration
-variable in order to tell the system that the new filter exists for the
-specified file extension. For an example on how to modify that configuration
-value, please take a look at the package's `controller.php` and follow what
-has been done in the default setup.
+For any filter related issues or guidance, you can refer to the
+[Assetic's documentation](https://github.com/kriswallsmith/assetic).
 
-More guidance and specific documentation on the setup will be added here later
-on when this package matures.
+The closure callbacks for the IoC container with the filter's associated key
+(such as `assets/filter/less`) will get the `$assets` variable as the second
+argument which is an instance of
+`Concrete\Package\AssetPipeline\Src\Service\Assets`. This object can provide
+more information about the asset compilation which may be required when
+initiating the filter. For example, you can get the theme customization's
+active variables by calling `$assets->getStyleSheetVariables()`. For an
+example, please see the existing closure callback implementations within the
+`Concrete\Package\AssetPipeline\Src\FilterProvider` class.
+
+In addition, you will also need to tell the system that the new filters exist
+in order for them to be available for actual use. You can do this either by
+calling setting the filters directly to the
+`Concrete\Package\AssetPipeline\Src\Asset\Manager` class or alternatively by
+editing the the `app.asset_filters` configuration variable.
+
+For an example on how to call the `Asset\Manager` directly, take a look at the
+`FilterProvider`'s method named `setFilters` and how it defines the available
+filters for the manager.
+
+For directly editing the `app.asset_filters` configuration variable, you can
+use your `application/config/app.php` configuration file. The following example
+configuration can be used in that file for instance. The provided example sets
+the exact same filters as the default configurations provide:
+
+```php
+<?php
+// Within your 'application/config/app.php' configuration file
+return array(
+    // ... you may have other configuration variables here ...
+    'asset' => array(
+        'filters' => array(
+            'less' => array(
+                'applyTo' => '\.less$',
+                'customizableStyles' => true,
+            ),
+            'scss' => array(
+                'applyTo' => '\.scss$',
+                'customizableStyles' => true,
+            ),
+            'js' => array(
+                'applyTo' => '\.js$',
+            ),
+        )
+    ),
+    // ... and you may have other configuration variables also here ...
+);
+```
+
+The configuration option values you can give to each filter in the filters
+configuration array are the following:
+
+- `applyTo` - A string that defines a regular expression which is used to match
+  against the file paths of the files to be filtered. If the regular expression
+  matches with the file path, the filter with the defined key will be searched
+  from the IoC container (`assets/filter/**key**`) and applied to the matching
+  file.
+- `customizableStyles` - A boolean that defines whether the filter can provide
+  customizable styles or not to be used with concrete5 themes. In case this
+  configuration variable is set to true, also a value extractor needs to be
+  defined for the IoC container with the filter's key
+  (`assets/value/extractor/**key**`) in order for the values to be extractable
+  from the defined file type inside the theme's `css/presets` folder. For an
+  example on implementing a value extractor, please take a look at the existing
+  implementations within the `src/StyleCustomizer/Style/Value/Extractor` folder
+  within this package.
 
 ## Few notes
 
