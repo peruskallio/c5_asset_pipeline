@@ -68,11 +68,19 @@ class FilterProvider extends ServiceProvider
             return new \Concrete\Package\AssetPipeline\Src\StyleCustomizer\Style\Value\Extractor\Scss($file, $urlroot);
         });
 
-        // Register JS filter if JavaScript should be compressed
-        if (!!Config::get('assets.js.compress', true)) {
+        // Register JS filter if JavaScript should be minified
+        if (!!Config::get('app.asset_filter_options.js.compress', true)) {
             Core::bind('assets/filter/js', function($app, $assets) {
                 $jsf = new \Concrete\Package\AssetPipeline\Src\Asset\Assetic\Filter\JShrinkFilter();
                 return $jsf;
+            });
+        }
+
+        // Register CSS filter if plain CSS should be minified
+        if (!!Config::get('app.asset_filter_options.css.compress', true)) {
+            Core::bind('assets/filter/css', function($app, $assets) {
+                $cmf = new \Concrete\Package\AssetPipeline\Src\Asset\Assetic\Filter\CssMinFilter();
+                return $cmf;
             });
         }
     }

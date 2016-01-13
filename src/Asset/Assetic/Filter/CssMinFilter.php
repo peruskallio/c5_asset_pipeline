@@ -4,7 +4,7 @@ namespace Concrete\Package\AssetPipeline\Src\Asset\Assetic\Filter;
 use Assetic\Asset\AssetInterface;
 use Assetic\Filter\FilterInterface;
 
-class JShrinkFilter implements FilterInterface
+class CssMinFilter implements FilterInterface
 {
 
     public function filterLoad(AssetInterface $asset)
@@ -13,7 +13,7 @@ class JShrinkFilter implements FilterInterface
 
     public function filterDump(AssetInterface $asset)
     {
-        $asset->setContent(\JShrink\Minifier::minify($asset->getContent()));
+        $asset->setContent(\CssMin::minify($asset->getContent()));
     }
 
 }
