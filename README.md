@@ -118,7 +118,7 @@ options can be passed exactly the same way to the `js` method as well.
     'second.scss',
     'third.scss',
 ), array(
-    'name' => 'site-styles'
+    'name' => 'site-styles',
 )) ?>
 ```
 
@@ -141,9 +141,7 @@ of two separate parts:
 In the following example, the first part (1.) is emphasized by bold characters
 and the second part (2.) is emphasized with italics:
 
-<pre>
 **style**-*18282c71313a64df0dccceacdbb9e563.css*
-</pre>
 
 The reason for suffixing the file names with the digest fingerprint is that the
 visitor's browser would always be forced to load the latest and greatest
