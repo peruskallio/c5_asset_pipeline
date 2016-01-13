@@ -89,13 +89,14 @@ such as images, font files, etc. Traditionally in concrete5, the Less files
 within your theme's folder referenced the relative folders within the theme
 automatically by replacing all the paths with the relative paths automatically.
 However, we think this is a bad design decision as it limits the paths that can
-be referenced from the themes and also might work differently with different
+be referenced from the themes (or makes it really awkward to reference them,
+e.g. `../../../../../`). Also, this might work differently with different
 filters and some filters might not even implement this feature.
 
 Instead, the built-in filters within this package provide an alternative way of
 referencing the static assets within the CSS files. This is through custom
 functions that can be used within the CSS files. This is implemented for both
-filters, the Less filter and the SCSS filter.
+filters, the Less filter and the SCSS filter that come with this package.
 
 To reference the static assets in different sections of the system, the
 following functions are available within your CSS files (in both `.less` and
