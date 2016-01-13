@@ -149,22 +149,32 @@ following functions are available within your CSS files (in both `.less` and
 .current-theme {
     /* Reference an image within the active theme for the current page */
     background-image: theme-asset-url('images/your-background-image.jpg');
+    /* Becomes (the actual path depends on the location of the theme): */
+    /* background-image: url(http://site.com/application/themes/active_theme/images/your-background-image.jpg); */
 }
 .other-theme {
     /* Reference an image within another theme */
     background-image: theme-asset-url('images/your-background-image.jpg', 'theme_handle');
+    /* Becomes (the actual path depends on the location of the theme): */
+    /* background-image: url(http://site.com/application/themes/theme_handle/images/your-background-image.jpg); */
 }
 .application {
     /* Reference an image within the application folder */
    background-image: asset-url('images/your-background-image.jpg');
+    /* Becomes: */
+    /* background-image: url(http://site.com/application/images/your-background-image.jpg); */
 }
 .core {
     /* Reference an image within the core (concrete) folder */
    background-image: core-asset-url('images/your-background-image.jpg');
+    /* Becomes: */
+    /* background-image: url(http://site.com/concrete/images/your-background-image.jpg); */
 }
 .package {
     /* Reference an image within a package folder */
    background-image: package-asset-url('images/your-background-image.jpg', 'package_handle');
+    /* Becomes: */
+    /* background-image: url(http://site.com/packages/package_handle/images/your-background-image.jpg); */
 }
 ```
 
@@ -172,7 +182,7 @@ In case you somewhere need only the paths of the assets, you can swap the
 `-url` suffix with `-path` in the function names to skip printing out the
 `url()` part of the resulting string.
 
-### Enabling the relative path replacing
+### Enabling the relative path replacing in CSS
 
 If you are using the assets pipeline with any existing concrete5 themes, they
 might be also relying on the concrete5's internal functionality that it
