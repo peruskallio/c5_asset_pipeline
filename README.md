@@ -278,6 +278,9 @@ return array(
         'js' => array(
             'applyTo' => '\.js$',
         ),
+        'css' => array(
+            'applyTo' => '\.css$',
+        ),
     ),
     // ... and you may have other configuration variables also here ...
 );
