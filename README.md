@@ -159,7 +159,7 @@ following functions are available within your CSS files (in both `.less` and
    background-image: asset-url('images/your-background-image.jpg');
 }
 .core {
-    /* Reference an image within the core folder */
+    /* Reference an image within the core (concrete) folder */
    background-image: core-asset-url('images/your-background-image.jpg');
 }
 .package {
