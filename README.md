@@ -138,10 +138,10 @@ of two separate parts:
 2. The fingerprint digest part which is suffixed into the file name with a dash
   in front of it.
 
-In the following example, the first part (1.) is emphasized by bold characters
-and the second part (2.) is emphasized with italics:
+In the following example, the first part (1.) is emphasized by italics and the
+second part (2.) is emphasized with bold characters:
 
-**style**-*18282c71313a64df0dccceacdbb9e563.css*
+*style*-**18282c71313a64df0dccceacdbb9e563**.css
 
 The reason for suffixing the file names with the digest fingerprint is that the
 visitor's browser would always be forced to load the latest and greatest
