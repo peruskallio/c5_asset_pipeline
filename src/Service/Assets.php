@@ -65,6 +65,8 @@ class Assets
     {
         $path = $this->cssPath($assets, $options);
 
+        // TODO: Add the combinedAssetSourceFiles to the asset object before
+        //       printing it out
         $html = Core::make('helper/html');
         return $html->css($path) . PHP_EOL;
     }
@@ -78,6 +80,8 @@ class Assets
     {
         $path = $this->javascriptPath($assets, $options);
 
+        // TODO: Add the combinedAssetSourceFiles to the asset object before
+        //       printing it out
         $html = Core::make('helper/html');
         return $html->javascript($path) . PHP_EOL;
     }
