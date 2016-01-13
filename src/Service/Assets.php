@@ -132,7 +132,7 @@ class Assets
         $outputPath = $cachePath . '/' . $cacheDir;
         $relativePath = $cachePathRelative . '/' . $cacheDir;
 
-        $name = isset($options['name']) ? $options['name'] : 'style';
+        $name = isset($options['name']) ? $options['name'] : $this->getDefaultAssetNameFor($extension);
 
         $outputFileName = $name . '.' . $extension;
         if (Config::get('concrete.cache.theme_css') && file_exists($outputPath . '/' . $outputFileName)) {
@@ -239,6 +239,18 @@ class Assets
 
         // Theme specific CSS (default)
         return $this->themeBasePath . '/' . DIRNAME_CSS . '/' . $path;
+    }
+
+    protected function getDefaultAssetNameFor($extension)
+    {
+        switch ($extension) {
+            case 'css':
+                return 'style';
+            case 'js':
+                return 'script';
+            default:
+                return $extension;
+        }
     }
 
     /**
