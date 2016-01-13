@@ -82,6 +82,49 @@ implementation for that language and enabling that filter would require
 installing external components on the computer which might require some level
 of technical expertise.
 
+## Configuration options
+
+Some options can be given through the site's 'application/config/app.php'
+configuration file for the specific filters. These options should go into the
+`asset_filter_options` configuration block within that file.
+
+The following options may be currently defined in the application configuration
+file:
+
+- `less.legacy_url_support` (default `false`)- Defines whether the Less files
+  should swap out the relative file paths in the CSS with the full paths that
+  they represent in the file system. Default behavior traditionally in
+  concrete5 but disabled by default in the Asset Pipeline. To learn why,
+  please read the [Relative paths within the CSS](#relative_paths) section of
+  this document.
+- `js.compress` (default `true`) - Defines whether plain JS files should be
+  minified or not. Enabled by default.
+- `css.compress` (default `true`) - Defines whether plain CSS files should be
+  minified or not. Enabled by default.
+
+An example of the actual configuration file might look like this:
+
+```php
+<?php
+// Within your 'application/config/app.php' configuration file
+return array(
+    // ... you may have other configuration variables here ...
+    'asset_filter_options' => array(
+        'less' => array(
+            'legacy_url_support' => false, // does not change the default
+        ),
+        'js' => array(
+            'compress' => true, // does not change the default
+        ),
+        'css' => array(
+            'compress' => true, // does not change the default
+        ),
+    ),
+    // ... and you may have other configuration variables also here ...
+);
+```
+
+<a name="relative_paths"></a>
 ## Relative paths within the CSS
 
 In the CSS you quite often need to reference static files from the file system,
