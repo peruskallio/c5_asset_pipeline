@@ -95,8 +95,8 @@ file:
   should swap out the relative file paths in the CSS with the full paths that
   they represent in the file system. Default behavior traditionally in
   concrete5 but disabled by default in the Asset Pipeline. To learn why,
-  please read the [Relative paths within the CSS](#relative_paths) section of
-  this document.
+  please read the [Relative paths within the CSS](#css_relative_paths) section
+  of this document.
 - `js.compress` (default `true`) - Defines whether plain JS files should be
   minified or not. Enabled by default.
 - `css.compress` (default `true`) - Defines whether plain CSS files should be
@@ -124,7 +124,7 @@ return array(
 );
 ```
 
-<a name="relative_paths"></a>
+<a name="css_relative_paths"></a>
 ## Relative paths within the CSS
 
 In the CSS you quite often need to reference static files from the file system,
@@ -202,12 +202,16 @@ Currently this package provides the followign filters:
   with the `.scss` extension.
 * Less preprocessing for CSS through `oyejorge/less.php`. Applies to all the
   files with the `.less` extension.
-* TODO: Plain CSS file minification...
-* JavaScript combination and minification for JS through `tedivm/jshrink`.
-  Applies for all the files with the `.js` extension.
+* Plain CSS file minification through `natxet/CssMin`. Applies for all the
+  files with the `.css` extension.
+* JavaScript minification for JS through `tedivm/jshrink`. Applies for all the
+  files with the `.js` extension.
 
-New filters (e.g. for CoffeeScript) can be added through configuration.
+New filters (e.g. for CoffeeScript) can be added through configuration. For
+adding new filters, please read the [Adding new filters](#new_filters) section
+of this document.
 
+<a name="new_filters"></a>
 ### Adding new filters
 
 New filters may be easily added for this package.

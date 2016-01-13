@@ -62,6 +62,9 @@ class Controller extends Package
                 'js' => array(
                     'applyTo' => '\.js$',
                 ),
+                'css' => array(
+                    'applyTo' => '\.css$',
+                ),
             ));
         }
 
