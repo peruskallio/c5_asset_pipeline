@@ -7,6 +7,7 @@ use Core;
 use Environment;
 use Package;
 use Page;
+use PageTheme;
 
 defined('C5_EXECUTE') or die("Access Denied.");
 
@@ -24,8 +25,14 @@ class Assets
 
     public function setThemeContext($theme = null)
     {
-        $c = Page::getCurrentPage();
-        $theme = $c->getCollectionThemeObject();
+        if ($theme === null) {
+            $c = Page::getCurrentPage();
+            if (is_object($c)) {
+                $theme = $c->getCollectionThemeObject();
+            } else {
+                $theme = PageTheme::getSiteTheme();
+            }
+        }
         if (!is_object($theme)) {
             // TODO: Check whether this can happen or not...
             throw new \Exception(t("No theme available for the page!"));

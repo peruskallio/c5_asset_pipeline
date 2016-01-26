@@ -5,6 +5,7 @@ use Core;
 use Concrete\Core\Foundation\Service\Provider as ServiceProvider;
 use Events;
 use Page;
+use PageTheme;
 use Symfony\Component\ClassLoader\MapClassLoader;
 
 defined('C5_EXECUTE') or die("Access Denied.");
@@ -33,7 +34,12 @@ class PackageServiceProvider extends ServiceProvider
                 $c = Page::getCurrentPage();
                 $view = $event->getArgument('view');
                 $assets = Core::make('asset_pipeline/helper/assets');
-                $theme = $c->getCollectionThemeObject();
+                $theme = null;
+                if (is_object($c)) {
+                    $theme = $c->getCollectionThemeObject();
+                } else {
+                    $theme = PageTheme::getSiteTheme();
+                }
                 // TODO: If there are page-specific styles set, should we use
                 //       this one instead:
                 //$style = $c->getCustomStyleObject();
