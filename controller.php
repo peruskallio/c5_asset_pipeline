@@ -1,13 +1,11 @@
 <?php
 namespace Concrete\Package\AssetPipeline;
 
+use Concrete\Core\Package\Package;
+use Concrete\Core\Support\Facade\Facade;
 use Concrete\Package\AssetPipeline\Src\FilterProvider;
 use Concrete\Package\AssetPipeline\Src\PackageServiceProvider;
-use Config;
-use Core;
-use Package;
-
-defined('C5_EXECUTE') or die("Access Denied.");
+use Illuminate\Filesystem\Filesystem;
 
 class Controller extends Package
 {
@@ -28,7 +26,7 @@ class Controller extends Package
 
     public function install()
     {
-        $fs = new \Illuminate\Filesystem\Filesystem();
+        $fs = new Filesystem();
         if ($fs->exists(__DIR__ . '/vendor/autoload.php')) {
             throw new Exception(t("You need to install the composer packages for this add-on before installation!"));
         }
@@ -40,44 +38,24 @@ class Controller extends Package
     {
         $this->loadDependencies();
 
-        $app = Core::getFacadeApplication();
+        $app = Facade::getFacadeApplication();
+
         $sp = new PackageServiceProvider($app);
         $sp->register();
         $sp->registerOverrides();
+        $sp->registerConfigurations();
         $sp->registerEvents();
-
-        // The filter definitions can be overridden by the site configs, so
-        // first check whether they are set or not.
-        if (!Config::has('app.asset_filters')) {
-            // Set the default filter options
-            Config::set('app.asset_filters', array(
-                'less' => array(
-                    'applyTo' => '\.less$',
-                    'customizableStyles' => true,
-                ),
-                'scss' => array(
-                    'applyTo' => '\.scss$',
-                    'customizableStyles' => true,
-                ),
-                'js' => array(
-                    'applyTo' => '\.js$',
-                ),
-                'css' => array(
-                    'applyTo' => '\.css$',
-                ),
-            ));
-        }
 
         $fp = new FilterProvider($app);
         $fp->register();
-        $fp->setFilters();
+        $fp->registerFilters();
     }
 
     protected function loadDependencies()
     {
         // No other way of managing the composer dependencies currently.
         // See: https://github.com/concrete5/concrete5-5.7.0/issues/360
-        $filesystem = new \Illuminate\Filesystem\Filesystem();
+        $filesystem = new Filesystem();
         $filesystem->getRequire(__DIR__ . '/vendor/autoload.php');
     }
 

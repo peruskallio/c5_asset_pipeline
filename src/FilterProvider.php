@@ -19,10 +19,6 @@ class FilterProvider extends ServiceProvider
     {
         $config = $this->app->make('config');
 
-        // Register the filter manager singleton
-        //$this->app->singleton('assets/manager', '\Concrete\Package\AssetPipeline\Src\Asset\Manager');
-        $this->app->singleton('Concrete\Package\AssetPipeline\Src\Asset\ManagerInterface', 'Concrete\Package\AssetPipeline\Src\Asset\Manager');
-
         // Register Less filter & variable value extractor
         $this->app->bind('assets/filter/less', function ($app, $assets) use ($config) {
             $lessf = new LessphpFilter(
@@ -94,10 +90,10 @@ class FilterProvider extends ServiceProvider
         }
     }
 
-    public function setFilters()
+    public function registerFilters()
     {
         $config = $this->app->make('config');
-        $manager = $this->app->make('assets/manager');
+        $manager = $this->app->make('Concrete\Package\AssetPipeline\Src\Asset\ManagerInterface');
         $filters = $config->get('app.asset_filters');
         if (is_array($filters)) {
             foreach ($filters as $key => $options) {

@@ -1,6 +1,7 @@
 <?php
 
-namespace Concrete\Core\Page\Theme;
+//namespace Concrete\Core\Page\Theme;
+namespace Concrete\Package\AssetPipeline\Src\Core\Original\Page\Theme;
 
 use Concrete\Core\Http\ResponseAssetGroup;
 use Config;
@@ -39,6 +40,7 @@ class Theme extends Object
 
     const E_THEME_INSTALLED = 1;
     const THEME_EXTENSION = '.php';
+    const THEME_CUSTOMIZABLE_STYLESHEET_EXTENSION = '.less';
     const FILENAME_TYPOGRAPHY_CSS = 'typography.css';
 
     protected $stylesheetCachePath;
@@ -88,7 +90,7 @@ class Theme extends Object
         return $db->GetCol('select pThemeHandle from PageThemes');
     }
 
-    public function providesAsset($assetType, $assetHandle)
+    public function providesAsset($assetType, $assetHandle = null)
     {
         $r = ResponseAssetGroup::get();
         $r->markAssetAsIncluded($assetType, $assetHandle);
@@ -204,19 +206,12 @@ class Theme extends Object
     {
         $env = Environment::get();
         if ($this->isThemeCustomizable()) {
-            $extensions = Core::make('assets/manager')->getFileExtensionsForCustomizableStyles();
-            foreach ($extensions as $ext) {
-                $file = $env->getRecord(
-                    DIRNAME_THEMES.'/'.$this->getThemeHandle(
-                    ).'/'.DIRNAME_CSS.'/'.DIRNAME_STYLE_CUSTOMIZER_PRESETS.'/'.$handle.'.'.$ext,
-                    $this->getPackageHandle()
-                );
-                if ($file->exists()) {
-                    break;
-                }
-            }
-
-            if (is_object($file) && $file->exists()) {
+            $file = $env->getRecord(
+                DIRNAME_THEMES.'/'.$this->getThemeHandle(
+                ).'/'.DIRNAME_CSS.'/'.DIRNAME_STYLE_CUSTOMIZER_PRESETS.'/'.$handle.static::THEME_CUSTOMIZABLE_STYLESHEET_EXTENSION,
+                $this->getPackageHandle()
+            );
+            if ($file->exists()) {
                 $urlroot = $env->getURL(
                     DIRNAME_THEMES.'/'.$this->getThemeHandle().'/'.DIRNAME_CSS,
                     $this->getPackageHandle()
@@ -248,7 +243,7 @@ class Theme extends Object
             $dh = Loader::helper('file');
             $files = $dh->getDirectoryContents($directory);
             foreach ($files as $f) {
-                if (Core::make('assets/manager')->canFileContainCustomizableStyles($f)) {
+                if (strrchr($f, '.') == static::THEME_CUSTOMIZABLE_STYLESHEET_EXTENSION) {
                     $preset = Preset::getFromFile($directory.'/'.$f, $urlroot);
                     if (is_object($preset)) {
                         $presets[] = $preset;
@@ -304,7 +299,7 @@ class Theme extends Object
             $dh = Loader::helper('file');
             $files = $dh->getDirectoryContents($directory);
             foreach ($files as $f) {
-                if (Core::make('assets/manager')->canFileContainCustomizableStyles($f)) {
+                if (strrchr($f, '.') == static::THEME_CUSTOMIZABLE_STYLESHEET_EXTENSION) {
                     $sheets[] = $this->getStylesheetObject($f);
                 }
             }
@@ -339,10 +334,9 @@ class Theme extends Object
     public function getStylesheet($stylesheet)
     {
         $stylesheet = $this->getStylesheetObject($stylesheet);
-        $style = $this->getThemeCustomStyleObject();
-        if (is_object($style)) {
-            $scl = $style->getValueList();
-            $stylesheet->setValueList($scl);
+        $styleValues = $this->getThemeCustomStyleObjectValues();
+        if (!is_null($styleValues)) {
+            $stylesheet->setValueList($styleValues);
         }
         if (!$this->isThemePreviewRequest()) {
             if (!$stylesheet->outputFileExists() || !Config::get('concrete.cache.theme_css')) {
@@ -373,6 +367,19 @@ class Theme extends Object
 
             return $o;
         }
+    }
+
+    /**
+     * Returns the value list of the custom style object if one exists.
+     * @return ValueList
+     */
+    public function getThemeCustomStyleObjectValues()
+    {
+        $style = $this->getThemeCustomStyleObject();
+        if (is_object($style)) {
+            return $style->getValueList();
+        }
+        return null;
     }
 
     public function setCustomStyleObject(
@@ -597,7 +604,7 @@ class Theme extends Object
                     }
                 }
                 if (is_null($className)) {
-                    $res->pError = t(/*i18n: %1$s is a filename, %2$s is a PHP class name */'The theme file %1$s does not defines the class %2$s', FILENAME_THEMES_CLASS, ltrim($classNames[0], '\\'));
+                    $res->pError = t(/*i18n: %1$s is a filename, %2$s is a PHP class name */'The theme file %1$s does not define the class %2$s', FILENAME_THEMES_CLASS, ltrim($classNames[0], '\\'));
                 } else {
                     $instance = new $className();
                     $extensionOf = '\\Concrete\\Core\\Page\\Theme\\Theme';
@@ -626,21 +633,25 @@ class Theme extends Object
         return $res;
     }
 
+    public function export($node)
+    {
+        $pst = static::getSiteTheme();
+        $activated = 0;
+        if ($pst->getThemeID() == $this->getThemeID()) {
+            $activated = 1;
+        }
+        $type = $node->addChild('theme');
+        $type->addAttribute('handle', $this->getThemeHandle());
+        $type->addAttribute('package', $this->getPackageHandle());
+        $type->addAttribute('activated', $activated);
+    }
+
     public static function exportList($xml)
     {
         $nxml = $xml->addChild('themes');
         $list = static::getList();
-        $pst = static::getSiteTheme();
-
         foreach ($list as $pt) {
-            $activated = 0;
-            if ($pst->getThemeID() == $pt->getThemeID()) {
-                $activated = 1;
-            }
-            $type = $nxml->addChild('theme');
-            $type->addAttribute('handle', $pt->getThemeHandle());
-            $type->addAttribute('package', $pt->getPackageHandle());
-            $type->addAttribute('activated', $activated);
+            $pt->export($nxml);
         }
     }
 

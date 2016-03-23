@@ -1,12 +1,12 @@
 <?php
-namespace Concrete\Core\StyleCustomizer;
+
+//namespace Concrete\Core\StyleCustomizer;
+namespace Concrete\Package\AssetPipeline\Src\Core\Original\StyleCustomizer;
 
 use Config;
-use Core;
 
 class Stylesheet
 {
-
     protected $file; // full path to stylesheet e.g. /full/path/to/concrete/themes/greek_yogurt/css/main.less
     protected $sourceUriRoot; // root of source. e.g. /concrete/themes/greek_yogurt/
     protected $outputDirectory; // e.g /full/path/to/files/cache/themes/greek_yogurt/css/main.css"
@@ -28,27 +28,30 @@ class Stylesheet
     {
         $this->valueList = $valueList;
     }
-
     /**
-     * Compiles the stylesheet using the correct preprocessor for the file.
-     * If a ValueList is provided its values are injected into the stylesheet
-     * before it is compiled into CSS.
+     * Compiles the stylesheet using LESS. If a ValueList is provided they are
+     * injected into the stylesheet.
      *
      * @return string CSS
      */
     public function getCss()
     {
-        $assets = Core::make('asset_pipeline/helper/assets');
-
+        $parser = new \Less_Parser(
+            array(
+                'cache_dir' => Config::get('concrete.cache.directory'),
+                'compress' => !!Config::get('concrete.theme.compress_preprocessor_output'),
+                'sourceMap' => !Config::get('concrete.theme.compress_preprocessor_output') && !!Config::get('concrete.theme.generate_less_sourcemap'),
+            )
+        );
+        $parser = $parser->parseFile($this->file, $this->sourceUriRoot);
         if (isset($this->valueList) && $this->valueList instanceof \Concrete\Core\StyleCustomizer\Style\ValueList) {
             $variables = array();
             foreach ($this->valueList->getValues() as $value) {
                 $variables = array_merge($value->toLessVariablesArray(), $variables);
             }
-            $assets->setStylesheetVariables('theme', $variables);
+            $parser->ModifyVars($variables);
         }
-
-        $css = $assets->compileCss(array($this->file));
+        $css = $parser->getCss();
 
         return $css;
     }
@@ -75,14 +78,11 @@ class Stylesheet
 
     public function getOutputPath()
     {
-        $fh = Core::make('helper/file');
-        return $this->outputDirectory . '/' . $fh->replaceExtension($this->stylesheet, 'css');
+        return $this->outputDirectory . '/' . str_replace('.less', '.css', $this->stylesheet);
     }
 
     public function getOutputRelativePath()
     {
-        $fh = Core::make('helper/file');
-        return $this->relativeOutputDirectory . '/' . $fh->replaceExtension($this->stylesheet, 'css');
+        return $this->relativeOutputDirectory . '/' . str_replace('.less', '.css', $this->stylesheet);
     }
-
 }

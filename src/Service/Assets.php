@@ -2,9 +2,6 @@
 
 namespace Concrete\Package\AssetPipeline\Src\Service;
 
-use Assetic\AssetManager as AsseticAssetManager;
-use Assetic\Asset\AssetCollection as AsseticAssetCollection;
-use Assetic\Factory\AssetFactory as AsseticAssetFactory;
 use Assetic\FilterManager;
 use Concrete\Core\Application\Application;
 use Concrete\Core\Foundation\Environment;
@@ -12,6 +9,7 @@ use Concrete\Core\Page\Page;
 use Concrete\Core\Page\Theme\Theme;
 use Concrete\Core\Support\Facade\Facade;
 use Exception;
+use Illuminate\Filesystem\Filesystem;
 
 class Assets
 {
@@ -160,28 +158,27 @@ class Assets
         // Save and cache
         $contents = $this->compileAssets($extension, $assetPaths, $options);
 
+        $fs = new Filesystem();
         if (!file_exists($outputPath)) {
-            @mkdir($outputPath, $config->get('concrete.filesystem.permissions.directory'), true);
+            $fs->makeDirectory($outputPath, $config->get('concrete.filesystem.permissions.directory'), true, true);
         }
-        file_put_contents($outputPath . '/' . $outputFileName, $contents);
+        $fs->put($outputPath . '/' . $outputFileName, $contents);
 
         $digest = hash_file('md5', $outputPath . '/' . $outputFileName);
         $digestFileName = $name . '-' . $digest . '.' . $extension;
-        file_put_contents($outputPath . '/' . $digestFileName, $contents);
+        $fs->put($outputPath . '/' . $digestFileName, $contents);
 
         return $relativePath . '/' . $digestFileName;
     }
 
     public function getAssetCollection(array $assetPaths)
     {
-        $factory = $this->getAssetFactory();
-        $fm = $factory->getFilterManager();
-
         $app = Facade::getFacadeApplication();
-        $am = $this->app->make(
-            'Concrete\Package\AssetPipeline\Src\Asset\ManagerInterface',
-            array($app)
-        );
+
+        $factory = $app->make('Assetic\Factory\AssetFactory');
+        $am = $this->app->make('Concrete\Package\AssetPipeline\Src\Asset\ManagerInterface');
+
+        $fm = $factory->getFilterManager();
         $assets = new AssetCollection();
 
         // Set the filters to he filter manager
@@ -298,18 +295,6 @@ class Assets
             $digest .= $asset . '#' . $lastModified;
         }
         return md5($digest);
-    }
-
-    protected function getAssetFactory()
-    {
-        $am = new AsseticAssetManager();
-        $fm = new AsseticFilterManager();
-
-        $factory = new AsseticAssetFactory(DIR_BASE);
-        $factory->setAssetManager($am);
-        $factory->setFilterManager($fm);
-
-        return $factory;
     }
 
 }

@@ -1,5 +1,6 @@
 <?php
-namespace Concrete\Core\StyleCustomizer\Style;
+//namespace Concrete\Core\StyleCustomizer\Style;
+namespace Concrete\Package\AssetPipeline\Src\Core\Original\StyleCustomizer\Style;
 
 use \Concrete\Core\StyleCustomizer\Style\Value\ImageValue;
 use Less_Environment;
@@ -9,7 +10,6 @@ use Permissions;
 
 class ImageStyle extends Style
 {
-
     public function render($value = false)
     {
         $r = \Concrete\Core\Http\ResponseAssetGroup::get();
@@ -53,19 +53,21 @@ class ImageStyle extends Style
         }
     }
 
-    public function getValuesFromVariables($extractor)
+    public function getValuesFromVariables($rules = array())
     {
         $values = array();
-
-        $vars = $extractor->extractMatchingVariables('.+\-image');
-        foreach ($vars as $name => $value) {
-            $value = trim($value, "'\"");
-            $uri = $extractor->normalizedUri($value);
-
-            $iv = new ImageValue(substr($name, 0, -strlen('-image')));
-            $iv->setUrl($uri);
-            if (is_object($iv)) {
-                $values[] = $iv;
+        foreach ($rules as $rule) {
+            if (preg_match('/@(.+)\-image/i', isset($rule->name) ? $rule->name : '', $matches)) {
+                $entryURI = $rule->value->value[0]->value[0]->currentFileInfo['entryUri'];
+                $value = $rule->value->value[0]->value[0]->value;
+                if ($entryURI) {
+                    $value = Less_Environment::normalizePath($entryURI . $value);
+                }
+                $iv = new ImageValue($matches[1]);
+                $iv->setUrl($value);
+                if (is_object($iv)) {
+                    $values[] = $iv;
+                }
             }
         }
 

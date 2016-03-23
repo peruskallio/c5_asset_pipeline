@@ -1,14 +1,15 @@
 <?php
+
 namespace Concrete\Package\AssetPipeline\Src;
 
-use Core;
+use Assetic\AssetManager as AsseticAssetManager;
+use Assetic\Asset\AssetCollection as AsseticAssetCollection;
+use Assetic\Factory\AssetFactory as AsseticAssetFactory;
 use Concrete\Core\Foundation\Service\Provider as ServiceProvider;
-use Events;
-use Page;
-use PageTheme;
+use Concrete\Core\Page\Page;
+use Concrete\Core\Page\Theme\Theme;
+use Concrete\Package\AssetPipeline\Src\Asset\Manager as AssetManager;
 use Symfony\Component\ClassLoader\MapClassLoader;
-
-defined('C5_EXECUTE') or die("Access Denied.");
 
 class PackageServiceProvider extends ServiceProvider
 {
@@ -17,6 +18,23 @@ class PackageServiceProvider extends ServiceProvider
 
     public function register()
     {
+        // Register the asset manager singleton
+        $this->app->bindShared('Concrete\Package\AssetPipeline\Src\Asset\ManagerInterface', function ($app) {
+            return new AssetManager($app);
+        });
+
+        // Register Assetic's AssetFactory
+        $this->app->bindShared('Assetic\Factory\AssetFactory', function ($app) {
+            $am = new AsseticAssetManager();
+            $fm = new AsseticFilterManager();
+
+            $factory = new AsseticAssetFactory(DIR_BASE);
+            $factory->setAssetManager($am);
+            $factory->setFilterManager($fm);
+
+            return $factory;
+        });
+
         $singletons = array(
             'helper/assets' => '\Concrete\Package\AssetPipeline\Src\Service\Assets',
         );
@@ -28,17 +46,20 @@ class PackageServiceProvider extends ServiceProvider
 
     public function registerEvents()
     {
+        $app = $this->app;
+        $events = $this->app->make('director');
+
         // Add the sitemap icons listener
-        Events::addListener(
-            'on_before_render', function($event) {
+        $events->addListener(
+            'on_before_render', function($event) use ($app) {
                 $c = Page::getCurrentPage();
                 $view = $event->getArgument('view');
-                $assets = Core::make('asset_pipeline/helper/assets');
+                $assets = $app->:make('asset_pipeline/helper/assets');
                 $theme = null;
                 if (is_object($c)) {
                     $theme = $c->getCollectionThemeObject();
                 } else {
-                    $theme = PageTheme::getSiteTheme();
+                    $theme = Theme::getSiteTheme();
                 }
                 // TODO: If there are page-specific styles set, should we use
                 //       this one instead:
@@ -61,18 +82,54 @@ class PackageServiceProvider extends ServiceProvider
         );
     }
 
+    public function registerConfigurations()
+    {
+        $config = $this->app->make('config');
+
+        // The filter definitions can be overridden by the site configs, so
+        // first check whether they are set or not.
+        if (!$config->has('app.asset_filters')) {
+            // Set the default filter options
+            $config->set('app.asset_filters', array(
+                'less' => array(
+                    'applyTo' => '\.less$',
+                    'customizableStyles' => true,
+                ),
+                'scss' => array(
+                    'applyTo' => '\.scss$',
+                    'customizableStyles' => true,
+                ),
+                'js' => array(
+                    'applyTo' => '\.js$',
+                ),
+                'css' => array(
+                    'applyTo' => '\.css$',
+                ),
+            ));
+        }
+    }
+
     public function registerOverrides()
     {
         // Core overrides
+        $dir = DIR_PACKAGES . '/' . $this->pkgHandle;
         $loader = new MapClassLoader(array(
-            'Concrete\\Core\\Page\\Theme\\Theme' => DIR_PACKAGES . '/' . $this->pkgHandle . '/src/Core/Page/Theme/Theme.php',
-            'Concrete\\Core\\StyleCustomizer\\Preset' => DIR_PACKAGES . '/' . $this->pkgHandle . '/src/Core/StyleCustomizer/Preset.php',
-            'Concrete\\Core\\StyleCustomizer\\Stylesheet' => DIR_PACKAGES . '/' . $this->pkgHandle . '/src/Core/StyleCustomizer/Stylesheet.php',
-            'Concrete\\Core\\StyleCustomizer\\Style\\ColorStyle' => DIR_PACKAGES . '/' . $this->pkgHandle . '/src/Core/StyleCustomizer/Style/ColorStyle.php',
-            'Concrete\\Core\\StyleCustomizer\\Style\\ImageStyle' => DIR_PACKAGES . '/' . $this->pkgHandle . '/src/Core/StyleCustomizer/Style/ImageStyle.php',
-            'Concrete\\Core\\StyleCustomizer\\Style\\SizeStyle' => DIR_PACKAGES . '/' . $this->pkgHandle . '/src/Core/StyleCustomizer/Style/SizeStyle.php',
-            'Concrete\\Core\\StyleCustomizer\\Style\\TypeStyle' => DIR_PACKAGES . '/' . $this->pkgHandle . '/src/Core/StyleCustomizer/Style/TypeStyle.php',
-            'Concrete\\Core\\StyleCustomizer\\Style\\ValueList' => DIR_PACKAGES . '/' . $this->pkgHandle . '/src/Core/StyleCustomizer/Style/ValueList.php',
+            'Concrete\\Core\\Page\\Theme\\Theme'
+                => $dir . '/src/Core/Override/Page/Theme/Theme.php',
+            'Concrete\\Core\\StyleCustomizer\\Preset'
+                => $dir . '/src/Core/Override/StyleCustomizer/Preset.php',
+            'Concrete\\Core\\StyleCustomizer\\Stylesheet'
+                => $dir . '/src/Core/Override/StyleCustomizer/Stylesheet.php',
+            'Concrete\\Core\\StyleCustomizer\\Style\\ColorStyle'
+                => $dir . '/src/Core/Override/StyleCustomizer/Style/ColorStyle.php',
+            'Concrete\\Core\\StyleCustomizer\\Style\\ImageStyle'
+                => $dir . '/src/Core/Override/StyleCustomizer/Style/ImageStyle.php',
+            'Concrete\\Core\\StyleCustomizer\\Style\\SizeStyle'
+                => $dir . '/src/Core/Override/StyleCustomizer/Style/SizeStyle.php',
+            'Concrete\\Core\\StyleCustomizer\\Style\\TypeStyle'
+                => $dir . '/src/Core/Override/StyleCustomizer/Style/TypeStyle.php',
+            'Concrete\\Core\\StyleCustomizer\\Style\\ValueList'
+                => $dir . '/src/Core/Override/StyleCustomizer/Style/ValueList.php',
         ));
         $loader->register(true);
 

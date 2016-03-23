@@ -1,40 +1,16 @@
 <?php
-namespace Concrete\Core\StyleCustomizer\Style;
-use \Concrete\Core\StyleCustomizer\Style\Value\SizeValue;
-use Less_Tree_Dimension;
 
-class SizeStyle extends Style
+namespace Concrete\Core\StyleCustomizer\Style;
+
+use Concrete\Core\StyleCustomizer\Style\Value\SizeValue;
+use Concrete\Package\AssetPipeline\Src\Core\Original\StyleCustomizer\Style\SizeStyle as CoreSizeStyle;
+use Concrete\Package\AssetPipeline\Src\StyleCustomizer\Style\ExtractableStyleInterface;
+use Concrete\Package\AssetPipeline\Src\StyleCustomizer\Style\Value\ExtractorInterface;
+
+class SizeStyle extends CoreSizeStyle implements ExtractableStyleInterface
 {
 
-    public function render($value = false)
-    {
-        $r = \Concrete\Core\Http\ResponseAssetGroup::get();
-        $r->requireAsset('core/style-customizer');
-
-        $strOptions = '';
-        $i = 0;
-        if (is_object($value)) {
-            $options['unit'] = $value->getUnit();
-            $options['value'] = $value->getSize();
-        }
-        $options['inputName'] = $this->getVariable();
-        $strOptions = json_encode($options);
-        print '<span class="ccm-style-customizer-display-swatch-wrapper" data-size-selector="' . $this->getVariable() . '"></span>';
-        print "<script type=\"text/javascript\">";
-        print "$(function() { $('span[data-size-selector=" . $this->getVariable() . "]').concreteSizeSelector({$strOptions}); });";
-        print "</script>";
-    }
-
-    public function getValueFromRequest(\Symfony\Component\HttpFoundation\ParameterBag $request)
-    {
-        $size = $request->get($this->getVariable());
-        $sv = new SizeValue($this->getVariable());
-        $sv->setSize($size['size']);
-        $sv->setUnit($size['unit']);
-        return $sv;
-    }
-
-    public function getValuesFromVariables($extractor)
+    public function getValuesFromExtractor(ExtractorInterface $extractor)
     {
         $values = array();
 
@@ -81,4 +57,3 @@ class SizeStyle extends Style
     }
 
 }
-
