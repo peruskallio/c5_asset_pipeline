@@ -1,30 +1,38 @@
 <?php
+
 namespace Concrete\Package\AssetPipeline\Src;
 
+use Assetic\Filter\ScssphpFilter;
 use Concrete\Core\Foundation\Service\Provider as ServiceProvider;
-use Config;
-use Core;
-
-defined('C5_EXECUTE') or die("Access Denied.");
+use Concrete\Package\AssetPipeline\Src\Asset\Assetic\Filter\CssMinFilter;
+use Concrete\Package\AssetPipeline\Src\Asset\Assetic\Filter\JShrinkFilter;
+use Concrete\Package\AssetPipeline\Src\Asset\Assetic\Filter\LessphpFilter;
+use Concrete\Package\AssetPipeline\Src\Asset\Less\FunctionProvider as LessFunctionProvider;
+use Concrete\Package\AssetPipeline\Src\Asset\Scss\FunctionProvider as ScssFunctionProvider;
+use Concrete\Package\AssetPipeline\Src\StyleCustomizer\Style\Value\Extractor\Less as LessStyleValueExtractor;
+use Concrete\Package\AssetPipeline\Src\StyleCustomizer\Style\Value\Extractor\Scss as ScssStyleValueExtractor;
 
 class FilterProvider extends ServiceProvider
 {
 
     public function register()
     {
+        $config = $this->app->make('config');
+
         // Register the filter manager singleton
-        $this->app->singleton('assets/manager', '\Concrete\Package\AssetPipeline\Src\Asset\Manager');
+        //$this->app->singleton('assets/manager', '\Concrete\Package\AssetPipeline\Src\Asset\Manager');
+        $this->app->singleton('Concrete\Package\AssetPipeline\Src\Asset\ManagerInterface', 'Concrete\Package\AssetPipeline\Src\Asset\Manager');
 
         // Register Less filter & variable value extractor
-        Core::bind('assets/filter/less', function($app, $assets) {
-            $lessf = new \Concrete\Package\AssetPipeline\Src\Asset\Assetic\Filter\LessphpFilter(
+        $this->app->bind('assets/filter/less', function ($app, $assets) use ($config) {
+            $lessf = new LessphpFilter(
                 array(
-                    'cache_dir' => Config::get('concrete.cache.directory'),
-                    'compress' => !!Config::get('concrete.theme.compress_preprocessor_output'),
-                    'sourceMap' => !Config::get('concrete.theme.compress_preprocessor_output') && !!Config::get('concrete.theme.generate_less_sourcemap'),
+                    'cache_dir' => $config->get('concrete.cache.directory'),
+                    'compress' => !!$config->get('concrete.theme.compress_preprocessor_output'),
+                    'sourceMap' => !$config->get('concrete.theme.compress_preprocessor_output') && !!$config->get('concrete.theme.generate_less_sourcemap'),
                 )
             );
-            if (Config::get('app.asset_filter_options.less.legacy_url_support', false)) {
+            if ($config->get('app.asset_filter_options.less.legacy_url_support', false)) {
                 $lessf->setBasePath('/' . ltrim($app['app_relative_path'], '/'));
                 $lessf->setRelativeUrlPaths(true);
             }
@@ -34,27 +42,27 @@ class FilterProvider extends ServiceProvider
                 $lessf->setLessVariables($variableList);
             }
 
-            $fp = new \Concrete\Package\AssetPipeline\Src\Asset\Less\FunctionProvider();
+            $fp = new LessFunctionProvider();
             $fp->registerFor($lessf);
 
             return $lessf;
         });
-        Core::bind('assets/value/extractor/less', function($app, $args) {
+        $this->app->bind('assets/value/extractor/less', function ($app, $args) {
             list($file, $urlroot) = array_pad((array) $args, 2, false);
-            return new \Concrete\Package\AssetPipeline\Src\StyleCustomizer\Style\Value\Extractor\Less($file, $urlroot);
+            return new LessStyleValueExtractor($file, $urlroot);
         });
 
         // Register SCSS filter & variable value extractor
-        Core::bind('assets/filter/scss', function($app, $assets) {
+        $this->app->bind('assets/filter/scss', function ($app, $assets) use ($config) {
             // TODO: Is there a way to get source maps to the SCSS filter?
-            $scssf = new \Assetic\Filter\ScssphpFilter();
-            if (Config::get('concrete.theme.compress_preprocessor_output')) {
+            $scssf = new ScssphpFilter();
+            if ($config->get('concrete.theme.compress_preprocessor_output')) {
                 $scssf->setFormatter('Leafo\ScssPhp\Formatter\Compressed');
             } else {
                 $scssf->setFormatter('Leafo\ScssPhp\Formatter\Expanded');
             }
 
-            $fp = new \Concrete\Package\AssetPipeline\Src\Asset\Scss\FunctionProvider();
+            $fp = new ScssFunctionProvider();
             $fp->registerFor($scssf);
 
             $variableList = $assets->getStyleSheetVariables();
@@ -64,23 +72,23 @@ class FilterProvider extends ServiceProvider
 
             return $scssf;
         });
-        Core::bind('assets/value/extractor/scss', function($app, $args) {
+        $this->app->bind('assets/value/extractor/scss', function ($app, $args) {
             list($file, $urlroot) = array_pad((array) $args, 2, false);
-            return new \Concrete\Package\AssetPipeline\Src\StyleCustomizer\Style\Value\Extractor\Scss($file, $urlroot);
+            return new ScssStyleValueExtractor($file, $urlroot);
         });
 
         // Register JS filter if JavaScript should be minified
-        if (!!Config::get('app.asset_filter_options.js.compress', true)) {
-            Core::bind('assets/filter/js', function($app, $assets) {
-                $jsf = new \Concrete\Package\AssetPipeline\Src\Asset\Assetic\Filter\JShrinkFilter();
+        if (!!$config->get('app.asset_filter_options.js.compress', true)) {
+            $this->app->bind('assets/filter/js', function ($app, $assets) {
+                $jsf = new JShrinkFilter();
                 return $jsf;
             });
         }
 
         // Register CSS filter if plain CSS should be minified
-        if (!!Config::get('app.asset_filter_options.css.compress', true)) {
-            Core::bind('assets/filter/css', function($app, $assets) {
-                $cmf = new \Concrete\Package\AssetPipeline\Src\Asset\Assetic\Filter\CssMinFilter();
+        if (!!$config->get('app.asset_filter_options.css.compress', true)) {
+            $this->app->bind('assets/filter/css', function ($app, $assets) {
+                $cmf = new CssMinFilter();
                 return $cmf;
             });
         }
@@ -88,8 +96,9 @@ class FilterProvider extends ServiceProvider
 
     public function setFilters()
     {
-        $manager = Core::make('assets/manager');
-        $filters = Config::get('app.asset_filters');
+        $config = $this->app->make('config');
+        $manager = $this->app->make('assets/manager');
+        $filters = $config->get('app.asset_filters');
         if (is_array($filters)) {
             foreach ($filters as $key => $options) {
                 $manager->setFilter($key, $options);

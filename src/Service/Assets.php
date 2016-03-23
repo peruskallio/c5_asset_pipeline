@@ -2,23 +2,28 @@
 
 namespace Concrete\Package\AssetPipeline\Src\Service;
 
+use Assetic\AssetManager as AsseticAssetManager;
+use Assetic\Asset\AssetCollection as AsseticAssetCollection;
+use Assetic\Factory\AssetFactory as AsseticAssetFactory;
+use Assetic\FilterManager;
+use Concrete\Core\Application\Application;
+use Concrete\Core\Foundation\Environment;
+use Concrete\Core\Page\Page;
 use Concrete\Core\Page\Theme\Theme;
-use Config;
-use Core;
-use Environment;
-use Package;
-use Page;
-use PageTheme;
+use Concrete\Core\Support\Facade\Facade;
+use Exception;
 
 class Assets
 {
 
+    protected $app;
     protected $context;
     protected $themeBasePath;
     protected $stylesheetVariables = array();
 
-    public function __construct()
+    public function __construct(Application $app)
     {
+        $this->app = $app;
         $this->setThemeContext();
     }
 
@@ -29,12 +34,12 @@ class Assets
             if (is_object($c)) {
                 $theme = $c->getCollectionThemeObject();
             } else {
-                $theme = PageTheme::getSiteTheme();
+                $theme = Theme::getSiteTheme();
             }
         }
         if (!is_object($theme)) {
             // TODO: Check whether this can happen or not...
-            throw new \Exception(t("No theme available for the page!"));
+            throw new Exception(t("No theme available for the page!"));
         }
         $env = Environment::get();
         $r = $env->getRecord(
@@ -73,7 +78,7 @@ class Assets
 
         // TODO: Add the combinedAssetSourceFiles to the asset object before
         //       printing it out
-        $html = Core::make('helper/html');
+        $html = $this->app->make('helper/html');
         return $html->css($path) . PHP_EOL;
     }
 
@@ -88,7 +93,7 @@ class Assets
 
         // TODO: Add the combinedAssetSourceFiles to the asset object before
         //       printing it out
-        $html = Core::make('helper/html');
+        $html = $this->app->make('helper/html');
         return $html->javascript($path) . PHP_EOL;
     }
 
@@ -120,7 +125,7 @@ class Assets
     public function compileAssets($extension, array $assetPaths, array $options = null)
     {
         if (count($assetPaths) < 1) {
-            throw new \Exception(t("Cannot compile asset without any target files."));
+            throw new Exception(t("Cannot compile asset without any target files."));
         }
         // Modify the asset paths to full paths
         foreach ($assetPaths as $k => $path) {
@@ -136,7 +141,9 @@ class Assets
     {
         $options = (array) $options;
 
-        $cachePath = Config::get('concrete.cache.directory');
+        $config = $this->app->make('config');
+
+        $cachePath = $config->get('concrete.cache.directory');
         $cachePathRelative = REL_DIR_FILES_CACHE;
 
         $outputPath = $cachePath . '/' . $cacheDir;
@@ -145,7 +152,7 @@ class Assets
         $name = isset($options['name']) ? $options['name'] : $this->getDefaultAssetNameFor($extension);
 
         $outputFileName = $name . '.' . $extension;
-        if (Config::get('concrete.cache.theme_css') && file_exists($outputPath . '/' . $outputFileName)) {
+        if ($config->get('concrete.cache.theme_css') && file_exists($outputPath . '/' . $outputFileName)) {
             $digest = hash_file('md5', $outputPath . '/' . $outputFileName);
             return $relativePath . '/' . $name . '-' . $digest . '.' . $extension;
         }
@@ -154,7 +161,7 @@ class Assets
         $contents = $this->compileAssets($extension, $assetPaths, $options);
 
         if (!file_exists($outputPath)) {
-            @mkdir($outputPath, Config::get('concrete.filesystem.permissions.directory'), true);
+            @mkdir($outputPath, $config->get('concrete.filesystem.permissions.directory'), true);
         }
         file_put_contents($outputPath . '/' . $outputFileName, $contents);
 
@@ -170,30 +177,41 @@ class Assets
         $factory = $this->getAssetFactory();
         $fm = $factory->getFilterManager();
 
-        $filters = Core::make('assets/manager')->getFilters();
-        $assets = new \Assetic\Asset\AssetCollection();
-        foreach ($filters as $key => $flt) {
-            if (!Core::bound('assets/filter/' . $key)) {
-                throw new \Exception(t("Filter not set for key: %s", $key));
-            }
-            $fm->set($key, Core::make('assets/filter/' . $key, $this));
+        $app = Facade::getFacadeApplication();
+        $am = $this->app->make(
+            'Concrete\Package\AssetPipeline\Src\Asset\ManagerInterface',
+            array($app)
+        );
+        $assets = new AssetCollection();
 
-            if (isset($flt['applyTo'])) {
-                $paths = array();
-                foreach ($assetPaths as $k => $path) {
-                    if (preg_match('#' . str_replace('#', '\#', $flt['applyTo']) . '#', $path)) {
-                        $paths[] = $path;
-                        unset($assetPaths[$k]);
-                    }
+        // Set the filters to he filter manager
+        foreach ($am->getFilters() as $key => $flt) {
+            if (!$this->app->bound('assets/filter/' . $key)) {
+                throw new Exception(t("Filter not set for key: %s", $key));
+            }
+            $fm->set($key, $this->app->make('assets/filter/' . $key, $this));
+        }
+
+        // Create the asset and push it into the AssetCollection
+        // with the filter keys that should be applied to that
+        // asset
+        $plainAssets = array();
+        foreach ($assetPaths as $k => $path) {
+            $appliedFilters = array();
+            foreach ($filters as $key => $flt) {
+                if (preg_match('#' . str_replace('#', '\#', $flt['applyTo']) . '#', $path)) {
+                    $appliedFilters[] = $key;
                 }
-                if (count($paths) > 0) {
-                    $assets->add($factory->createAsset($paths, array($key)));
-                }
+            }
+            if (count($appliedFilters) > 0) {
+                $assets->add($factory->createAsset($path, $appliedFilters));
+            } else {
+                $plainAssets[] = $paths;
             }
         }
         // Add assets that did not go through any filters
-        if (count($assetPaths) > 0) {
-            $assets->add($factory->createAsset($assetPaths));
+        if (count($plainAssets) > 0) {
+            $assets->add($factory->createAsset($plainAssets));
         }
 
         return $assets;
@@ -217,7 +235,7 @@ class Assets
                         $subpath = substr($subpath, $pos + 1);
                         $locationPath = DIR_PACKAGES . '/' . $pkgHandle;
                     } else {
-                        throw new \Exception(t("Invalid path: %s. Package not defined.", $path));
+                        throw new Exception(t("Invalid path: %s. Package not defined.", $path));
                     }
                 } elseif ($location == 'theme') {
                     if (($pos = strpos($subpath, '/')) !== false) {
@@ -227,13 +245,13 @@ class Assets
                             $env = Environment::get();
                             $locationPath = $env->getPath(DIRNAME_THEMES . '/' . $themeHandle, $th->getPackageHandle());
                         } else {
-                            throw new \Exception(t("Invalid theme in path: %s. Theme '%s' does not exist."));
+                            throw new Exception(t("Invalid theme in path: %s. Theme '%s' does not exist."));
                         }
                     } else {
-                        throw new \Exception(t("Invalid path: %s. Theme not defined.", $path));
+                        throw new Exception(t("Invalid path: %s. Theme not defined.", $path));
                     }
                 } else {
-                    throw new \Exception(t("Invalid path: %s. Unknown location: %s.", $path, $location));
+                    throw new Exception(t("Invalid path: %s. Unknown location: %s.", $path, $location));
                 }
 
                 if (!empty($locationPath)) {
@@ -284,10 +302,10 @@ class Assets
 
     protected function getAssetFactory()
     {
-        $am = new \Assetic\AssetManager();
-        $fm = new \Assetic\FilterManager();
+        $am = new AsseticAssetManager();
+        $fm = new AsseticFilterManager();
 
-        $factory = new \Assetic\Factory\AssetFactory(DIR_BASE);
+        $factory = new AsseticAssetFactory(DIR_BASE);
         $factory->setAssetManager($am);
         $factory->setFilterManager($fm);
 
