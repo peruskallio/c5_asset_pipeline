@@ -2,41 +2,26 @@
 
 namespace Concrete\Package\AssetPipeline\Src\Asset;
 
-class Manager implements ManagerInterface
+use Concrete\Core\Application\Application;
+use Exception;
+
+/**
+ * Implementation for the UtilityInterface.
+ *
+ * @author Antti Hukkanen <antti.hukkanen@mainiotech.fi>
+ */
+class Utility implements UtilityInterface
 {
 
-    protected $filters = array();
+    /** @var Application */
+    protected $app;
 
     /**
-     * {@inheritDoc}
+     * @param Application $app
      */
-    public function setFilter($key, array $options)
+    public function __construct(Application $app)
     {
-        $this->filters[$key] = $options;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getFilter($key)
-    {
-        return $this->filters[$key];
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function removeFilter($key)
-    {
-        unset($this->filters[$key]);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getFilters()
-    {
-        return $this->filters;
+        $this->app = $app;
     }
 
     /**
@@ -44,7 +29,7 @@ class Manager implements ManagerInterface
      */
     public function canFileContainCustomizableStyles($file)
     {
-        $filters = $this->getFilters();
+        $filters = $this->getFilterSettings();
         foreach ($filters as $key => $flt) {
             if (isset($flt['customizableStyles']) && $flt['customizableStyles'] &&
                     preg_match('#' . str_replace('#', '\#', $flt['applyTo']) . '#', $file)) {
@@ -59,7 +44,7 @@ class Manager implements ManagerInterface
      */
     public function getFileExtensionsForCustomizableStyles()
     {
-        $filters = $this->getFilters();
+        $filters = $this->getFilterSettings();
 
         $extensions = array();
         foreach ($filters as $key => $flt) {
@@ -75,16 +60,28 @@ class Manager implements ManagerInterface
      */
     public function getValueExtractorForFile($file, $urlroot)
     {
-        $filters = $this->getFilters();
+        $filters = $this->getFilterSettings();
         foreach ($filters as $key => $flt) {
             if (isset($flt['customizableStyles']) && $flt['customizableStyles'] &&
                     preg_match('#' . str_replace('#', '\#', $flt['applyTo']) . '#', $file)) {
-                if (!Core::bound('assets/value/extractor/' . $key)) {
-                    throw new \Exception(t("Value extractor not set for key: %s", $key));
+                if (!$this->appbound('assets/value/extractor/' . $key)) {
+                    throw new Exception(t("Value extractor not set for key: %s", $key));
                 }
-                return Core::make('assets/value/extractor/' . $key, array($file, $urlroot));
+                return $this->app->make('assets/value/extractor/' . $key, array($file, $urlroot));
             }
         }
+    }
+
+    /**
+     * Returns the settings for all defined filters in the filter
+     * settings repository.
+     *
+     * @return array
+     */
+    protected function getFilterSettings()
+    {
+        $rep = $this->app->make('Concrete\Package\AssetPipeline\Src\Asset\FilterSettingsRepositoryInterface');
+        return $rep->getAllFilterSettings();
     }
 
 }

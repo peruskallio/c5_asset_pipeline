@@ -13,7 +13,7 @@ class ValueList extends CoreValueList
 
     public static function loadFromFile($file, $urlroot = false)
     {
-        $extractor = Core::make('Concrete\Package\AssetPipeline\Src\Asset\ManagerInterface')->getValueExtractorForFile($file, $urlroot);
+        $extractor = Core::make('Concrete\Package\AssetPipeline\Src\Asset\UtilityInterface')->getValueExtractorForFile($file, $urlroot);
         if (!is_object($extractor)) {
             throw new Exception(t("Invalid file for value extraction: %s", $file));
         }

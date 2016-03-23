@@ -55,7 +55,7 @@ abstract class AbstractExtractor implements ExtractorInterface
     /**
      * {@inheritDoc}
      */
-    public function normalizedUri($uri)
+    public function normalizeUri($uri)
     {
         if ($this->urlroot) {
             $uri = rtrim($this->urlroot, '/') . '/' . $uri;

@@ -26,7 +26,7 @@ class Preset extends CorePreset
      */
     public static function getFromFile($file, $urlroot)
     {
-        $extractor = Core::make('Concrete\Package\AssetPipeline\Src\Asset\ManagerInterface')->getValueExtractorForFile($file, $urlroot);
+        $extractor = Core::make('Concrete\Package\AssetPipeline\Src\Asset\UtilityInterface')->getValueExtractorForFile($file, $urlroot);
         if (!is_object($extractor)) {
             return null;
         }

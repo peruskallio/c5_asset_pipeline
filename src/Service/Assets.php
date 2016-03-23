@@ -176,13 +176,13 @@ class Assets
         $app = Facade::getFacadeApplication();
 
         $factory = $app->make('Assetic\Factory\AssetFactory');
-        $am = $this->app->make('Concrete\Package\AssetPipeline\Src\Asset\ManagerInterface');
+        $fsr = $this->app->make('Concrete\Package\AssetPipeline\Src\Asset\FilterSettingsRepositoryInterface');
 
         $fm = $factory->getFilterManager();
         $assets = new AssetCollection();
 
         // Set the filters to he filter manager
-        foreach ($am->getFilters() as $key => $flt) {
+        foreach ($fsr->getAllFilterSettings() as $key => $flt) {
             if (!$this->app->bound('assets/filter/' . $key)) {
                 throw new Exception(t("Filter not set for key: %s", $key));
             }
@@ -195,7 +195,7 @@ class Assets
         $plainAssets = array();
         foreach ($assetPaths as $k => $path) {
             $appliedFilters = array();
-            foreach ($filters as $key => $flt) {
+            foreach ($fsr->getAllFilterSettings() as $key => $flt) {
                 if (preg_match('#' . str_replace('#', '\#', $flt['applyTo']) . '#', $path)) {
                     $appliedFilters[] = $key;
                 }

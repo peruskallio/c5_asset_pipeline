@@ -93,11 +93,11 @@ class FilterProvider extends ServiceProvider
     public function registerFilters()
     {
         $config = $this->app->make('config');
-        $manager = $this->app->make('Concrete\Package\AssetPipeline\Src\Asset\ManagerInterface');
+        $repository = $this->app->make('Concrete\Package\AssetPipeline\Src\Asset\FilterSettingsRepositoryInterface');
         $filters = $config->get('app.asset_filters');
         if (is_array($filters)) {
             foreach ($filters as $key => $options) {
-                $manager->setFilter($key, $options);
+                $repository->registerFilterSettings($key, $options);
             }
         }
     }

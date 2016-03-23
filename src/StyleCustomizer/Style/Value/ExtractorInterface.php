@@ -72,6 +72,6 @@ interface ExtractorInterface
      *
      * @param string $uri
      */
-    public function normalizedUri($uri);
+    public function normalizeUri($uri);
 
 }

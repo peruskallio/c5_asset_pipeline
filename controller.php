@@ -1,4 +1,5 @@
 <?php
+
 namespace Concrete\Package\AssetPipeline;
 
 use Concrete\Core\Package\Package;

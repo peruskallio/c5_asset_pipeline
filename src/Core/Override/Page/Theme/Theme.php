@@ -20,7 +20,7 @@ class Theme extends CoreTheme
     {
         $env = Environment::get();
         if ($this->isThemeCustomizable()) {
-            $extensions = Core::make('Concrete\Package\AssetPipeline\Src\Asset\ManagerInterface')->getFileExtensionsForCustomizableStyles();
+            $extensions = Core::make('Concrete\Package\AssetPipeline\Src\Asset\UtilityInterface')->getFileExtensionsForCustomizableStyles();
             foreach ($extensions as $ext) {
                 $file = $env->getRecord(
                     DIRNAME_THEMES.'/'.$this->getThemeHandle(
@@ -64,7 +64,7 @@ class Theme extends CoreTheme
             $dh = Loader::helper('file');
             $files = $dh->getDirectoryContents($directory);
             foreach ($files as $f) {
-                if (Core::make('Concrete\Package\AssetPipeline\Src\Asset\ManagerInterface')->canFileContainCustomizableStyles($f)) {
+                if (Core::make('Concrete\Package\AssetPipeline\Src\Asset\UtilityInterface')->canFileContainCustomizableStyles($f)) {
                     $preset = Preset::getFromFile($directory.'/'.$f, $urlroot);
                     if (is_object($preset)) {
                         $presets[] = $preset;
@@ -101,7 +101,7 @@ class Theme extends CoreTheme
             $dh = Loader::helper('file');
             $files = $dh->getDirectoryContents($directory);
             foreach ($files as $f) {
-                if (Core::make('Concrete\Package\AssetPipeline\Src\Asset\ManagerInterface')->canFileContainCustomizableStyles($f)) {
+                if (Core::make('Concrete\Package\AssetPipeline\Src\Asset\UtilityInterface')->canFileContainCustomizableStyles($f)) {
                     $sheets[] = $this->getStylesheetObject($f);
                 }
             }

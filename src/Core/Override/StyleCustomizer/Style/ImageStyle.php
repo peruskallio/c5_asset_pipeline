@@ -16,7 +16,7 @@ class ImageStyle extends CoreImageStyle implements ExtractableStyleInterface
         $vars = $extractor->extractMatchingVariables('.+\-image');
         foreach ($vars as $name => $value) {
             $value = trim($value, "'\"");
-            $uri = $extractor->normalizedUri($value);
+            $uri = $extractor->normalizeUri($value);
 
             $iv = new ImageValue(substr($name, 0, -strlen('-image')));
             $iv->setUrl($uri);

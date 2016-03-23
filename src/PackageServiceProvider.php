@@ -8,7 +8,7 @@ use Assetic\Factory\AssetFactory as AsseticAssetFactory;
 use Concrete\Core\Foundation\Service\Provider as ServiceProvider;
 use Concrete\Core\Page\Page;
 use Concrete\Core\Page\Theme\Theme;
-use Concrete\Package\AssetPipeline\Src\Asset\Manager as AssetManager;
+use Concrete\Package\AssetPipeline\Src\Asset\Utility as AssetUtility;
 use Symfony\Component\ClassLoader\MapClassLoader;
 
 class PackageServiceProvider extends ServiceProvider
@@ -19,9 +19,15 @@ class PackageServiceProvider extends ServiceProvider
     public function register()
     {
         // Register the asset manager singleton
-        $this->app->bindShared('Concrete\Package\AssetPipeline\Src\Asset\ManagerInterface', function ($app) {
-            return new AssetManager($app);
+        $this->app->bindShared('Concrete\Package\AssetPipeline\Src\Asset\UtilityInterface', function ($app) {
+            return new AssetUtility($app);
         });
+
+        // Register filter settings repository singleton
+        $this->app->singleton(
+            'Concrete\Package\AssetPipeline\Src\Asset\FilterSettingsRepositoryInterface',
+            'Concrete\Package\AssetPipeline\Src\Asset\FilterSettingsRepository'
+        );
 
         // Register Assetic's AssetFactory
         $this->app->bindShared('Assetic\Factory\AssetFactory', function ($app) {
