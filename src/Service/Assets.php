@@ -1,4 +1,5 @@
 <?php
+
 namespace Concrete\Package\AssetPipeline\Src\Service;
 
 use Concrete\Core\Page\Theme\Theme;
@@ -8,8 +9,6 @@ use Environment;
 use Package;
 use Page;
 use PageTheme;
-
-defined('C5_EXECUTE') or die("Access Denied.");
 
 class Assets
 {

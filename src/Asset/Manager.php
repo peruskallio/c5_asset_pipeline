@@ -1,37 +1,46 @@
 <?php
+
 namespace Concrete\Package\AssetPipeline\Src\Asset;
 
-defined('C5_EXECUTE') or die("Access Denied.");
-
-class Manager
+class Manager implements ManagerInterface
 {
 
     protected $filters = array();
 
+    /**
+     * {@inheritDoc}
+     */
     public function setFilter($key, array $options)
     {
         $this->filters[$key] = $options;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function getFilter($key)
     {
         return $this->filters[$key];
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function removeFilter($key)
     {
         unset($this->filters[$key]);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function getFilters()
     {
         return $this->filters;
     }
 
     /**
-     * Tests whether the file can contain presets or not. This depends on the
-     * filters set in the configuration and whether the filter has been defined
-     * to provide presets.
+     * {@inheritDoc}
      */
     public function canFileContainCustomizableStyles($file)
     {
@@ -45,6 +54,9 @@ class Manager
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function getFileExtensionsForCustomizableStyles()
     {
         $filters = $this->getFilters();
@@ -52,12 +64,15 @@ class Manager
         $extensions = array();
         foreach ($filters as $key => $flt) {
             if (isset($flt['customizableStyles']) && $flt['customizableStyles']) {
-                $extensions[] = $key;
+                $extensions[] = isset($flt['fileExtension']) ? $flt['fileExtension'] : $key;
             }
         }
         return $extensions;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function getValueExtractorForFile($file, $urlroot)
     {
         $filters = $this->getFilters();

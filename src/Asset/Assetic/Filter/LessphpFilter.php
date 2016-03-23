@@ -1,15 +1,17 @@
 <?php
+
 namespace Concrete\Package\AssetPipeline\Src\Asset\Assetic\Filter;
 
 use Assetic\Asset\AssetInterface;
 use Assetic\Factory\AssetFactory;
 use Assetic\Filter\DependencyExtractorInterface;
+use Assetic\Filter\FilterInterface;
 use Assetic\Util\LessUtils;
 
 /**
  * Loads LESS files using the PHP implementation of less, lessphp.
  */
-class LessphpFilter implements DependencyExtractorInterface
+class LessphpFilter implements FilterInterface, DependencyExtractorInterface
 {
 
     private $options = array();

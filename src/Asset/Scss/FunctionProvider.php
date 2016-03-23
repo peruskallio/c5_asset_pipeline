@@ -1,24 +1,16 @@
 <?php
+
 namespace Concrete\Package\AssetPipeline\Src\Asset\Scss;
 
+use Assetic\Filter\FilterInterface;
+use Concrete\Core\Foundation\Environment;
 use Concrete\Core\Page\Theme\Theme;
-use Environment;
-use Page;
+use Concrete\Package\AssetPipeline\Src\Asset\AbstractFunctionProvider;
 
-defined('C5_EXECUTE') or die("Access Denied.");
-
-class FunctionProvider
+class FunctionProvider extends AbstractFunctionProvider
 {
 
-    protected $currentTheme;
-
-    public function __construct()
-    {
-        $c = Page::getCurrentPage();
-        $this->currentTheme = $c->getCollectionThemeObject();
-    }
-
-    public function registerFor($filter)
+    public function registerFor(FilterInterface $filter)
     {
         $functions = array(
             'asset-url'             => 'assetUrl',
@@ -111,11 +103,6 @@ class FunctionProvider
             $url = '/' . $url;
         }
         return DIR_REL . '/' . DIRNAME_PACKAGES . '/' . $package . $url;
-    }
-
-    protected function getCurrentTheme()
-    {
-        return $this->currentTheme;
     }
 
     protected function extractStringFromArgument($arg)

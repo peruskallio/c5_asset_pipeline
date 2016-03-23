@@ -1,20 +1,28 @@
 <?php
+
 namespace Concrete\Package\AssetPipeline\Src\StyleCustomizer\Style\Value\Extractor;
 
-use Concrete\Package\AssetPipeline\Src\StyleCustomizer\Style\Value\Extractor;
+use Concrete\Package\AssetPipeline\Src\StyleCustomizer\Style\Value\AbstractExtractor;
 use Less_Parser;
 use Less_Tree_Call;
 
-defined('C5_EXECUTE') or die("Access Denied.");
-
-class Less extends Extractor
+class Less extends AbstractExtractor
 {
 
+    /** @var array */
+    protected $rules = array();
+
+    /**
+     * {@inheritDoc}
+     */
     public function extractPresetName()
     {
         return $this->extractFirstMatchingValue(static::PRESET_RULE_NAME);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function extractPresetIcon()
     {
         foreach ($this->getRules() as $rule) {
@@ -34,11 +42,17 @@ class Less extends Extractor
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function extractFontsFile()
     {
         return $this->extractFirstMatchingValue(static::PRESET_RULE_FONTS_FILE);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function extractFirstMatchingValue($find)
     {
         foreach($this->getRules() as $rule) {
@@ -48,6 +62,9 @@ class Less extends Extractor
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function extractMatchingVariables($match)
     {
         $values = array();
@@ -59,6 +76,13 @@ class Less extends Extractor
         return $values;
     }
 
+    /**
+     * Parses all the style rule variables from the style preset file when
+     * called for the first time and stores them into a local variable. On
+     * concecutive calls, returns the locally stored values.
+     *
+     * @return array
+     */
     protected function getRules()
     {
         if (!isset($this->rules)) {

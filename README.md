@@ -96,7 +96,7 @@ The output of this call would look something like this:
 
 ### Options to be passed to the asset helper
 
-In the above examples the `css` and `js` functions are called against an
+In the above examples the `css()` and `js()` methods are called against an
 instance of `Concrete\Package\AssetPipeline\Src\Service\Assets` which also
 allows passing an options array to both of these functions as the second
 parameter.
@@ -109,8 +109,8 @@ The options that you can currently pass to both of these methods are:
   final asset's filename. To learn more about the asset fingerprints, please
   read the [Asset fingerprints](#asset_fingerprints) section of this document.
 
-An example of passing the options array to the `css` method follows below. The
-options can be passed exactly the same way to the `js` method as well.
+An example of passing the options array to the `css()` method follows below. The
+options can be passed exactly the same way to the `js()` method as well.
 
 ```php
 <?php echo $assets->css(array(
@@ -347,7 +347,7 @@ calling setting the filters directly to the
 editing the the `app.asset_filters` configuration variable.
 
 For an example on how to call the `Asset\Manager` directly, take a look at the
-`FilterProvider`'s method named `setFilters` and how it defines the available
+`FilterProvider`'s method named `setFilters()` and how it defines the available
 filters for the manager.
 
 For directly editing the `app.asset_filters` configuration variable, you can
@@ -402,8 +402,16 @@ configuration array are the following:
 
 - Integrate the Asset Pipeline functionality with the internal assets system
   within concrete, e.g. for JavaScript preprocessing purposes.
+  * Check how to override `Concrete\Core\Asset\CssAsset` and
+    `Concrete\Core\Asset\JavascriptAsset`. Check the static `process()` method
+    in these classes. It is probably enough to override these methods.
+- Try out defining multiple filters on a file (e.g. first run through Less/SCSS
+  filter and after that through autoprefixer, such as
+  github.com/postcss/autoprefixer)
 - Examine if it is possible to implement the source maps also for the SCSS
   filter
+- Create an example theme using SCSS and Theme customizations for an example
+  of the functionality of this package.
 
 ## Few notes
 

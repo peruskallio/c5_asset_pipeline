@@ -1,4 +1,5 @@
 <?php
+
 namespace Concrete\Package\AssetPipeline\Src\Asset\Assetic\Filter;
 
 use Assetic\Asset\AssetInterface;

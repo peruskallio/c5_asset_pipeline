@@ -1,19 +1,28 @@
 <?php
+
 namespace Concrete\Package\AssetPipeline\Src\StyleCustomizer\Style\Value\Extractor;
 
-use Concrete\Package\AssetPipeline\Src\StyleCustomizer\Style\Value\Extractor;
+use Concrete\Package\AssetPipeline\Src\StyleCustomizer\Style\Value\AbstractExtractor;
+use Illuminate\Filesystem\Filesystem;
 
-defined('C5_EXECUTE') or die("Access Denied.");
-
-class Scss extends Extractor
+class Scss extends AbstractExtractor
 {
 
+    /** @var array */
+    protected $rules = array();
+
+    /**
+     * {@inheritDoc}
+     */
     public function extractPresetName()
     {
         $name = $this->extractFirstMatchingValue(static::PRESET_RULE_NAME);
         return trim($name, "'\"");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function extractPresetIcon()
     {
         foreach ($this->getRules() as $name => $rule) {
@@ -36,12 +45,18 @@ class Scss extends Extractor
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function extractFontsFile()
     {
         $file = $this->extractFirstMatchingValue(static::PRESET_RULE_FONTS_FILE);
         return trim($file, "'\"");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function extractFirstMatchingValue($find)
     {
         foreach($this->getRules() as $name => $rule) {
@@ -51,6 +66,9 @@ class Scss extends Extractor
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function extractMatchingVariables($match)
     {
         $values = array();
@@ -66,10 +84,18 @@ class Scss extends Extractor
         return $values;
     }
 
+    /**
+     * Parses all the style rule variables from the style preset file when
+     * called for the first time and stores them into a local variable. On
+     * concecutive calls, returns the locally stored values.
+     *
+     * @return array
+     */
     protected function getRules()
     {
         if (!isset($this->rules)) {
-            $code = file_get_contents($this->file);
+            $fs = new Filesystem();
+            $code = $fs->get($this->file);
             $sp = new \Leafo\ScssPhp\Parser($this->file);
             $ret = $sp->parse($code);
 
@@ -84,6 +110,13 @@ class Scss extends Extractor
         return $this->rules;
     }
 
+    /**
+     * Converts a rule from the parser into standard CSS format.
+     *
+     * The passed $rule parameter needs to be a rule returned by the parser.
+     *
+     * @param mixed $rule
+     */
     protected function ruleToCss($rule)
     {
         if (is_array($rule)) {

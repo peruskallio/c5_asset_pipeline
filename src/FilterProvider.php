@@ -46,6 +46,7 @@ class FilterProvider extends ServiceProvider
 
         // Register SCSS filter & variable value extractor
         Core::bind('assets/filter/scss', function($app, $assets) {
+            // TODO: Is there a way to get source maps to the SCSS filter?
             $scssf = new \Assetic\Filter\ScssphpFilter();
             if (Config::get('concrete.theme.compress_preprocessor_output')) {
                 $scssf->setFormatter('Leafo\ScssPhp\Formatter\Compressed');

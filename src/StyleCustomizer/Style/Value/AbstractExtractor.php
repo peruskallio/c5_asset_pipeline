@@ -1,9 +1,8 @@
 <?php
+
 namespace Concrete\Package\AssetPipeline\Src\StyleCustomizer\Style\Value;
 
-defined('C5_EXECUTE') or die("Access Denied.");
-
-abstract class Extractor
+abstract class AbstractExtractor implements ExtractorInterface
 {
 
     const PRESET_RULE_NAME = 'preset-name';
@@ -11,16 +10,51 @@ abstract class Extractor
     const PRESET_RULE_FONTS_FILE = 'preset-fonts-file';
     const PRESET_RULE_ICON_FUNCTION = 'concrete-icon';
 
+    /** @var string */
     protected $file;
+    /** @var string */
     protected $urlroot;
+    /** @var string */
     protected $rules;
 
+    /**
+     * @param string $file
+     * @param string|bool $urlroot
+     */
     public function __construct($file, $urlroot = false)
     {
         $this->file = $file;
         $this->urlroot = $urlroot;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    abstract public function extractPresetName();
+
+    /**
+     * {@inheritDoc}
+     */
+    abstract public function extractPresetIcon();
+
+    /**
+     * {@inheritDoc}
+     */
+    abstract public function extractFontsFile();
+
+    /**
+     * {@inheritDoc}
+     */
+    abstract public function extractFirstMatchingValue($find);
+
+    /**
+     * {@inheritDoc}
+     */
+    abstract public function extractMatchingVariables($match);
+
+    /**
+     * {@inheritDoc}
+     */
     public function normalizedUri($uri)
     {
         if ($this->urlroot) {
