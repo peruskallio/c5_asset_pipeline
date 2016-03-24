@@ -120,6 +120,10 @@ class PackageServiceProvider extends ServiceProvider
         // Core overrides
         $dir = DIR_PACKAGES . '/' . $this->pkgHandle;
         $loader = new MapClassLoader(array(
+            'Concrete\\Core\\Asset\\CssAsset'
+                => $dir . '/src/Core/Override/Asset/CssAsset.php',
+            'Concrete\\Core\\Asset\\JavascriptAsset'
+                => $dir . '/src/Core/Override/Asset/JavascriptAsset.php',
             'Concrete\\Core\\Page\\Theme\\Theme'
                 => $dir . '/src/Core/Override/Page/Theme/Theme.php',
             'Concrete\\Core\\StyleCustomizer\\Preset'

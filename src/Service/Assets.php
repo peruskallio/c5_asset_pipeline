@@ -148,11 +148,16 @@ class Assets
         $relativePath = $cachePathRelative . '/' . $cacheDir;
 
         $name = isset($options['name']) ? $options['name'] : $this->getDefaultAssetNameFor($extension);
+        $useDigest = isset($options['skipDigest']) ? !$options['skipDigest'] : true;
 
         $outputFileName = $name . '.' . $extension;
         if ($config->get('concrete.cache.theme_css') && file_exists($outputPath . '/' . $outputFileName)) {
-            $digest = hash_file('md5', $outputPath . '/' . $outputFileName);
-            return $relativePath . '/' . $name . '-' . $digest . '.' . $extension;
+            if ($useDigest) {
+                return $relativePath . '/' . $outputFileName;
+            } else {
+                $digest = hash_file('md5', $outputPath . '/' . $outputFileName);
+                return $relativePath . '/' . $name . '-' . $digest . '.' . $extension;
+            }
         }
 
         // Save and cache
@@ -168,7 +173,7 @@ class Assets
         $digestFileName = $name . '-' . $digest . '.' . $extension;
         $fs->put($outputPath . '/' . $digestFileName, $contents);
 
-        return $relativePath . '/' . $digestFileName;
+        return $useDigest ? $relativePath . '/' . $digestFileName : $relativePath . '/' . $outputFileName;
     }
 
     public function getAssetCollection(array $assetPaths)
@@ -184,7 +189,7 @@ class Assets
         // Set the filters to he filter manager
         foreach ($fsr->getAllFilterSettings() as $key => $flt) {
             if (!$this->app->bound('assets/filter/' . $key)) {
-                throw new Exception(t("Filter not set for key: %s", $key));
+                throw new Exception(t("Filter not available for key: %s", $key));
             }
             $fm->set($key, $this->app->make('assets/filter/' . $key, $this));
         }

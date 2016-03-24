@@ -400,11 +400,6 @@ configuration array are the following:
 
 ## TODO
 
-- Integrate the Asset Pipeline functionality with the internal assets system
-  within concrete, e.g. for JavaScript preprocessing purposes.
-  * Check how to override `Concrete\Core\Asset\CssAsset` and
-    `Concrete\Core\Asset\JavascriptAsset`. Check the static `process()` method
-    in these classes. It is probably enough to override these methods.
 - Try out defining multiple filters on a file (e.g. first run through Less/SCSS
   filter and after that through autoprefixer, such as
   github.com/postcss/autoprefixer)
