@@ -73,21 +73,17 @@ class FilterProvider extends ServiceProvider
             return new ScssStyleValueExtractor($file, $urlroot);
         });
 
-        // Register JS filter if JavaScript should be minified
-        if (!!$config->get('app.asset_filter_options.js.compress', true)) {
-            $this->app->bind('assets/filter/jshrink', function ($app, $assets) {
-                $jsf = new JShrinkFilter();
-                return $jsf;
-            });
-        }
+        // Register JShrink filter
+        $this->app->bind('assets/filter/jshrink', function ($app, $assets) {
+            $jsf = new JShrinkFilter();
+            return $jsf;
+        });
 
-        // Register CSS filter if plain CSS should be minified
-        if (!!$config->get('app.asset_filter_options.css.compress', true)) {
-            $this->app->bind('assets/filter/cssmin', function ($app, $assets) {
-                $cmf = new CssMinFilter();
-                return $cmf;
-            });
-        }
+        // Register CssMin filter
+        $this->app->bind('assets/filter/cssmin', function ($app, $assets) {
+            $cmf = new CssMinFilter();
+            return $cmf;
+        });
     }
 
     public function registerFilters()

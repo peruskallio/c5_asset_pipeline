@@ -96,7 +96,7 @@ class PackageServiceProvider extends ServiceProvider
         // first check whether they are set or not.
         if (!$config->has('app.asset_filters')) {
             // Set the default filter options
-            $config->set('app.asset_filters', array(
+            $filters = array(
                 'less' => array(
                     'applyTo' => '\.less$',
                     'customizableStyles' => true,
@@ -105,13 +105,18 @@ class PackageServiceProvider extends ServiceProvider
                     'applyTo' => '\.scss$',
                     'customizableStyles' => true,
                 ),
-                'jshrink' => array(
+            );
+            if (!!$config->get('app.asset_filter_options.js.compress', true)) {
+                $filters['jshrink'] = array(
                     'applyTo' => '\.js$',
-                ),
-                'cssmin' => array(
+                );
+            }
+            if (!!$config->get('app.asset_filter_options.css.compress', true)) {
+                $filters['cssmin'] = array(
                     'applyTo' => '\.css$',
-                ),
-            ));
+                );
+            }
+            $config->set('app.asset_filters', $filters);
         }
     }
 
