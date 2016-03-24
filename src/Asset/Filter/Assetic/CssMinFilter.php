@@ -1,16 +1,16 @@
 <?php
 
-namespace Concrete\Package\AssetPipeline\Src\Asset\Assetic\Filter;
+namespace Concrete\Package\AssetPipeline\Src\Asset\Filter\Assetic;
 
 use Assetic\Asset\AssetInterface;
 use Assetic\Filter\FilterInterface;
 
 /**
- * Provides an Assetic filter wrapper for the JShrink library.
+ * Provides an Assetic filter wrapper for the CssMin library.
  *
  * @author Antti Hukkanen <antti.hukkanen@mainiotech.fi>
  */
-class JShrinkFilter implements FilterInterface
+class CssMinFilter implements FilterInterface
 {
 
     /**
@@ -25,7 +25,7 @@ class JShrinkFilter implements FilterInterface
      */
     public function filterDump(AssetInterface $asset)
     {
-        $asset->setContent(\JShrink\Minifier::minify($asset->getContent()));
+        $asset->setContent(\CssMin::minify($asset->getContent()));
     }
 
 }

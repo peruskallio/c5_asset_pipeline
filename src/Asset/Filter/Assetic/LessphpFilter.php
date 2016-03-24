@@ -1,6 +1,6 @@
 <?php
 
-namespace Concrete\Package\AssetPipeline\Src\Asset\Assetic\Filter;
+namespace Concrete\Package\AssetPipeline\Src\Asset\Filter\Assetic;
 
 use Assetic\Asset\AssetInterface;
 use Assetic\Factory\AssetFactory;
