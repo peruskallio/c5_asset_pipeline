@@ -105,7 +105,7 @@ class PackageServiceProvider extends ServiceProvider
                     'applyTo' => '\.scss$',
                     'customizableStyles' => true,
                 ),
-                'js' => array(
+                'jshrink' => array(
                     'applyTo' => '\.js$',
                 ),
                 'cssmin' => array(

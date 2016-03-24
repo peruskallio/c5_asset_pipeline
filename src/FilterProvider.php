@@ -75,7 +75,7 @@ class FilterProvider extends ServiceProvider
 
         // Register JS filter if JavaScript should be minified
         if (!!$config->get('app.asset_filter_options.js.compress', true)) {
-            $this->app->bind('assets/filter/js', function ($app, $assets) {
+            $this->app->bind('assets/filter/jshrink', function ($app, $assets) {
                 $jsf = new JShrinkFilter();
                 return $jsf;
             });
