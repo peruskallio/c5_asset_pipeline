@@ -201,6 +201,9 @@ class Assets
         foreach ($assetPaths as $k => $path) {
             $appliedFilters = array();
             foreach ($fsr->getAllFilterSettings() as $key => $flt) {
+                if (!isset($flt['applyTo']) || !$flt['applyTo'] || !is_string($flt['applyTo'])) {
+                    continue;
+                }
                 if (preg_match('#' . str_replace('#', '\#', $flt['applyTo']) . '#', $path)) {
                     $appliedFilters[] = $key;
                 }
@@ -208,9 +211,10 @@ class Assets
             if (count($appliedFilters) > 0) {
                 $assets->add($factory->createAsset($path, $appliedFilters));
             } else {
-                $plainAssets[] = $paths;
+                $plainAssets[] = $path;
             }
         }
+
         // Add assets that did not go through any filters
         if (count($plainAssets) > 0) {
             $assets->add($factory->createAsset($plainAssets));
