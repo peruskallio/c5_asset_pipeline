@@ -400,8 +400,6 @@ configuration array are the following:
 
 ## TODO
 
-- Examine if it is possible to implement the source maps also for the SCSS
-  filter
 - Create an example theme using SCSS and Theme customizations for an example
   of the functionality of this package.
 
