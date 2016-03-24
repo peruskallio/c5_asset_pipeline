@@ -108,7 +108,7 @@ class PackageServiceProvider extends ServiceProvider
                 'js' => array(
                     'applyTo' => '\.js$',
                 ),
-                'css' => array(
+                'cssmin' => array(
                     'applyTo' => '\.css$',
                 ),
             ));

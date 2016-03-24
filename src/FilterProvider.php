@@ -83,7 +83,7 @@ class FilterProvider extends ServiceProvider
 
         // Register CSS filter if plain CSS should be minified
         if (!!$config->get('app.asset_filter_options.css.compress', true)) {
-            $this->app->bind('assets/filter/css', function ($app, $assets) {
+            $this->app->bind('assets/filter/cssmin', function ($app, $assets) {
                 $cmf = new CssMinFilter();
                 return $cmf;
             });
