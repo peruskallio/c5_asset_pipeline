@@ -2,9 +2,9 @@
 
 namespace Concrete\Package\AssetPipeline\Src;
 
+use Assetic\Filter\CssMinFilter;
 use Assetic\Filter\ScssphpFilter;
 use Concrete\Core\Foundation\Service\Provider as ServiceProvider;
-use Concrete\Package\AssetPipeline\Src\Asset\Filter\Assetic\CssMinFilter;
 use Concrete\Package\AssetPipeline\Src\Asset\Filter\Assetic\JShrinkFilter;
 use Concrete\Package\AssetPipeline\Src\Asset\Filter\Assetic\LessphpFilter;
 use Concrete\Package\AssetPipeline\Src\Asset\Filter\Less\FunctionProvider as LessFunctionProvider;
