@@ -424,4 +424,4 @@ them from. Technically they are also separated into their own folder
 
 Licensed under the MIT license. See LICENSE for more information.
 
-Copyright (c) 2015 Mainio Tech Ltd.
+Copyright (c) 2015-2016 Mainio Tech Ltd.
