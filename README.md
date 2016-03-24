@@ -400,9 +400,6 @@ configuration array are the following:
 
 ## TODO
 
-- Try out defining multiple filters on a file (e.g. first run through Less/SCSS
-  filter and after that through autoprefixer, such as
-  github.com/postcss/autoprefixer)
 - Examine if it is possible to implement the source maps also for the SCSS
   filter
 - Create an example theme using SCSS and Theme customizations for an example
