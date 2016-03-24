@@ -1,6 +1,6 @@
 <?php
 
-namespace Concrete\Package\AssetPipeline\Src\Asset;
+namespace Concrete\Package\AssetPipeline\Src\Asset\Filter;
 
 use Assetic\Filter\FilterInterface;
 use Concrete\Core\Page\Page;

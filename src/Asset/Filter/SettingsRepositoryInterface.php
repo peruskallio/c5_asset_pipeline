@@ -1,6 +1,6 @@
 <?php
 
-namespace Concrete\Package\AssetPipeline\Src\Asset;
+namespace Concrete\Package\AssetPipeline\Src\Asset\Filter;
 
 /**
  * Filter settings repository provides the available filter settings
@@ -10,7 +10,7 @@ namespace Concrete\Package\AssetPipeline\Src\Asset;
  *
  * @author Antti Hukkanen <antti.hukkanen@mainiotech.fi>
  */
-interface FilterSettingsRepositoryInterface
+interface SettingsRepositoryInterface
 {
 
     /**

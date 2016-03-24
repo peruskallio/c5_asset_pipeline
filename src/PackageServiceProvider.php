@@ -25,8 +25,8 @@ class PackageServiceProvider extends ServiceProvider
 
         // Register filter settings repository singleton
         $this->app->singleton(
-            'Concrete\Package\AssetPipeline\Src\Asset\FilterSettingsRepositoryInterface',
-            'Concrete\Package\AssetPipeline\Src\Asset\FilterSettingsRepository'
+            'Concrete\Package\AssetPipeline\Src\Asset\Filter\SettingsRepositoryInterface',
+            'Concrete\Package\AssetPipeline\Src\Asset\Filter\SettingsRepository'
         );
 
         // Register Assetic's AssetFactory

@@ -7,8 +7,8 @@ use Concrete\Core\Foundation\Service\Provider as ServiceProvider;
 use Concrete\Package\AssetPipeline\Src\Asset\Assetic\Filter\CssMinFilter;
 use Concrete\Package\AssetPipeline\Src\Asset\Assetic\Filter\JShrinkFilter;
 use Concrete\Package\AssetPipeline\Src\Asset\Assetic\Filter\LessphpFilter;
-use Concrete\Package\AssetPipeline\Src\Asset\Less\FunctionProvider as LessFunctionProvider;
-use Concrete\Package\AssetPipeline\Src\Asset\Scss\FunctionProvider as ScssFunctionProvider;
+use Concrete\Package\AssetPipeline\Src\Asset\Filter\Less\FunctionProvider as LessFunctionProvider;
+use Concrete\Package\AssetPipeline\Src\Asset\Filter\Scss\FunctionProvider as ScssFunctionProvider;
 use Concrete\Package\AssetPipeline\Src\StyleCustomizer\Style\Value\Extractor\Less as LessStyleValueExtractor;
 use Concrete\Package\AssetPipeline\Src\StyleCustomizer\Style\Value\Extractor\Scss as ScssStyleValueExtractor;
 
@@ -93,7 +93,7 @@ class FilterProvider extends ServiceProvider
     public function registerFilters()
     {
         $config = $this->app->make('config');
-        $repository = $this->app->make('Concrete\Package\AssetPipeline\Src\Asset\FilterSettingsRepositoryInterface');
+        $repository = $this->app->make('Concrete\Package\AssetPipeline\Src\Asset\Filter\SettingsRepositoryInterface');
         $filters = $config->get('app.asset_filters');
         if (is_array($filters)) {
             foreach ($filters as $key => $options) {

@@ -1,11 +1,11 @@
 <?php
 
-namespace Concrete\Package\AssetPipeline\Src\Asset\Scss;
+namespace Concrete\Package\AssetPipeline\Src\Asset\Filter\Scss;
 
 use Assetic\Filter\FilterInterface;
 use Concrete\Core\Foundation\Environment;
 use Concrete\Core\Page\Theme\Theme;
-use Concrete\Package\AssetPipeline\Src\Asset\AbstractFunctionProvider;
+use Concrete\Package\AssetPipeline\Src\Asset\Filter\AbstractFunctionProvider;
 
 /**
  * Implements a function provider for the Scss parser.

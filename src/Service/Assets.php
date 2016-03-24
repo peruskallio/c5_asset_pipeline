@@ -176,7 +176,7 @@ class Assets
         $app = Facade::getFacadeApplication();
 
         $factory = $app->make('Assetic\Factory\AssetFactory');
-        $fsr = $this->app->make('Concrete\Package\AssetPipeline\Src\Asset\FilterSettingsRepositoryInterface');
+        $fsr = $this->app->make('Concrete\Package\AssetPipeline\Src\Asset\Filter\SettingsRepositoryInterface');
 
         $fm = $factory->getFilterManager();
         $assets = new AssetCollection();

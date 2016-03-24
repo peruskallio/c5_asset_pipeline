@@ -80,7 +80,7 @@ class Utility implements UtilityInterface
      */
     protected function getFilterSettings()
     {
-        $rep = $this->app->make('Concrete\Package\AssetPipeline\Src\Asset\FilterSettingsRepositoryInterface');
+        $rep = $this->app->make('Concrete\Package\AssetPipeline\Src\Asset\Filter\SettingsRepositoryInterface');
         return $rep->getAllFilterSettings();
     }
 

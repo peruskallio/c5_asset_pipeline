@@ -1,6 +1,6 @@
 <?php
 
-namespace Concrete\Package\AssetPipeline\Src\Asset;
+namespace Concrete\Package\AssetPipeline\Src\Asset\Filter;
 
 /**
  * Filter settings repository implementation that stores the filter
@@ -8,7 +8,7 @@ namespace Concrete\Package\AssetPipeline\Src\Asset;
  *
  * @author Antti Hukkanen <antti.hukkanen@mainiotech.fi>
  */
-class FilterSettingsRepository implements FilterSettingsRepositoryInterface
+class SettingsRepository implements SettingsRepositoryInterface
 {
 
     protected $filters = array();
