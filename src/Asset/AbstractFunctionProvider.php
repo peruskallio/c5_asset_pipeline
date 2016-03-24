@@ -11,7 +11,7 @@ use Concrete\Core\Page\Page;
  *
  * @author Antti Hukkanen <antti.hukkanen@mainiotech.fi>
  */
-class AbstractFunctionProvider implements FunctionProviderInterface
+abstract class AbstractFunctionProvider implements FunctionProviderInterface
 {
 
     protected $currentTheme;

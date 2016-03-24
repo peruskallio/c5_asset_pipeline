@@ -2,9 +2,9 @@
 
 namespace Concrete\Package\AssetPipeline\Src;
 
-use Assetic\AssetManager as AsseticAssetManager;
-use Assetic\Asset\AssetCollection as AsseticAssetCollection;
-use Assetic\Factory\AssetFactory as AsseticAssetFactory;
+use Assetic\AssetManager;
+use Assetic\FilterManager;
+use Assetic\Factory\AssetFactory;
 use Concrete\Core\Foundation\Service\Provider as ServiceProvider;
 use Concrete\Core\Page\Page;
 use Concrete\Core\Page\Theme\Theme;
@@ -31,10 +31,10 @@ class PackageServiceProvider extends ServiceProvider
 
         // Register Assetic's AssetFactory
         $this->app->bindShared('Assetic\Factory\AssetFactory', function ($app) {
-            $am = new AsseticAssetManager();
-            $fm = new AsseticFilterManager();
+            $am = new AssetManager();
+            $fm = new FilterManager();
 
-            $factory = new AsseticAssetFactory(DIR_BASE);
+            $factory = new AssetFactory(DIR_BASE);
             $factory->setAssetManager($am);
             $factory->setFilterManager($fm);
 
@@ -60,7 +60,7 @@ class PackageServiceProvider extends ServiceProvider
             'on_before_render', function($event) use ($app) {
                 $c = Page::getCurrentPage();
                 $view = $event->getArgument('view');
-                $assets = $app->:make('asset_pipeline/helper/assets');
+                $assets = $app->make('asset_pipeline/helper/assets');
                 $theme = null;
                 if (is_object($c)) {
                     $theme = $c->getCollectionThemeObject();

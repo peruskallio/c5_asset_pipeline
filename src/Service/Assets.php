@@ -2,7 +2,7 @@
 
 namespace Concrete\Package\AssetPipeline\Src\Service;
 
-use Assetic\FilterManager;
+use Assetic\Asset\AssetCollection;
 use Concrete\Core\Application\Application;
 use Concrete\Core\Foundation\Environment;
 use Concrete\Core\Page\Page;
