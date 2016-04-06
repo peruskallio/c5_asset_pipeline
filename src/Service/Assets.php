@@ -97,7 +97,7 @@ class Assets
 
     public function javascriptPath($assets, array $options = null)
     {
-        return $this->compileJavascriptToCache($name, $assets);
+        return $this->compileJavascriptToCache($assets, $assets);
     }
 
     public function compileCss(array $assetPaths, array $options = null)
@@ -127,7 +127,13 @@ class Assets
         }
         // Modify the asset paths to full paths
         foreach ($assetPaths as $k => $path) {
-            $path = $this->getFullPath($path);
+            $dirName = null;
+            if ($extension == 'css') {
+                $dirName = DIRNAME_CSS;
+            } elseif ($extension == 'js') {
+                $dirName = DIRNAME_JAVASCRIPT;
+            }
+            $path = $this->getFullPath($path, $dirName);
             $assetPaths[$k] = $path;
         }
 
@@ -223,7 +229,7 @@ class Assets
         return $assets;
     }
 
-    public function getFullPath($path)
+    public function getFullPath($path, $dirName = null)
     {
         if ($path[0] == '@') {
             if (($pos = strpos($path, '/')) !== false) {
@@ -261,7 +267,7 @@ class Assets
                 }
 
                 if (!empty($locationPath)) {
-                    return $locationPath . '/' . DIRNAME_CSS . '/' . $subpath;
+                    return $locationPath . '/' . $dirName . '/' . $subpath;
                 }
             } else {
                 // This is an assetic alias, e.g. "@jquery".
@@ -272,7 +278,7 @@ class Assets
         }
 
         // Theme specific CSS (default)
-        return $this->themeBasePath . '/' . DIRNAME_CSS . '/' . $path;
+        return $this->themeBasePath . '/' . $dirName . '/' . $path;
     }
 
     protected function getDefaultAssetNameFor($extension)
