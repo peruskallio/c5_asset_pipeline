@@ -32,7 +32,7 @@ added once this becomes a fully working version.
 4. Open up your console and navigate to the package's directory you just
    renamed. Run `composer install` to install all the composer packages.
 5. Open up your web browser and navigate to the Dashboard of the website.
-   Install the add-on through the
+   Install the add-on through the `Extend` view of the dashboard.
 
 ## How to use?
 
@@ -127,6 +127,10 @@ The output of this call would look something like this:
 ```html
 <link href="/application/files/cache/css/site-styles-18282c71313a64df0dccceacdbb9e563.css" rel="stylesheet" type="text/css" media="all">
 ```
+
+### Example theme
+
+Example theme that is built with the Asset Pipeline can be found from [here](https://github.com/mainio/c5_theme_bootstrap4_starter).
 
 <a name="asset_fingerprints"></a>
 ## Asset fingerprints digests
@@ -369,10 +373,10 @@ return array(
             'applyTo' => '\.scss$',
             'customizableStyles' => true,
         ),
-        'js' => array(
+        'jshrink' => array(
             'applyTo' => '\.js$',
         ),
-        'css' => array(
+        'cssmin' => array(
             'applyTo' => '\.css$',
         ),
     ),
@@ -397,11 +401,6 @@ configuration array are the following:
   example on implementing a value extractor, please take a look at the existing
   implementations within the `src/StyleCustomizer/Style/Value/Extractor` folder
   within this package.
-
-## TODO
-
-- Create an example theme using SCSS and Theme customizations for an example
-  of the functionality of this package.
 
 ## Few notes
 

@@ -50,7 +50,9 @@ class FilterProvider extends ServiceProvider
 
         // Register SCSS filter & variable value extractor
         $this->app->bind('assets/filter/scss', function ($app, $assets) use ($config) {
-            // TODO: Is there a way to get source maps to the SCSS filter?
+            // There does not seem to be a way to get the source maps to the
+            // ScssPhp at the moment:
+            // https://github.com/leafo/scssphp/issues/135
             $scssf = new ScssphpFilter();
             if ($config->get('concrete.theme.compress_preprocessor_output')) {
                 $scssf->setFormatter('Leafo\ScssPhp\Formatter\Compressed');
