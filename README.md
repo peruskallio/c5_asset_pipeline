@@ -41,6 +41,11 @@ This is an instance of `Concrete\Package\AssetPipeline\Src\Service\Assets` and
 you can call any methods available in that class by calling them against this
 object in your theme's view files.
 
+### Example theme
+
+Example theme that is built with the Asset Pipeline can be found from
+[here](https://github.com/mainio/c5_theme_bootstrap4_starter).
+
 ### Example of outputting a URL for preprocessed CSS files
 
 Within your theme files you can use the following snippet:
@@ -127,10 +132,6 @@ The output of this call would look something like this:
 ```html
 <link href="/application/files/cache/css/site-styles-18282c71313a64df0dccceacdbb9e563.css" rel="stylesheet" type="text/css" media="all">
 ```
-
-### Example theme
-
-Example theme that is built with the Asset Pipeline can be found from [here](https://github.com/mainio/c5_theme_bootstrap4_starter).
 
 <a name="asset_fingerprints"></a>
 ## Asset fingerprints digests
