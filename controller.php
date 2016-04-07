@@ -28,7 +28,7 @@ class Controller extends Package
     public function install()
     {
         $fs = new Filesystem();
-        if ($fs->exists(__DIR__ . '/vendor/autoload.php')) {
+        if (!$fs->exists(__DIR__ . '/vendor/autoload.php')) {
             throw new Exception(t("You need to install the composer packages for this add-on before installation!"));
         }
 
