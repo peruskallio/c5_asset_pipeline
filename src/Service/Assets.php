@@ -159,10 +159,10 @@ class Assets
         $outputFileName = $name . '.' . $extension;
         if ($config->get('concrete.cache.theme_css') && file_exists($outputPath . '/' . $outputFileName)) {
             if ($useDigest) {
-                return $relativePath . '/' . $outputFileName;
-            } else {
                 $digest = hash_file('md5', $outputPath . '/' . $outputFileName);
                 return $relativePath . '/' . $name . '-' . $digest . '.' . $extension;
+            } else {
+                return $relativePath . '/' . $outputFileName;
             }
         }
 
