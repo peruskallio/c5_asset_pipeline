@@ -2,6 +2,7 @@
 
 namespace Concrete\Package\AssetPipeline;
 
+use Concrete\Core\Foundation\ClassLoader;
 use Concrete\Core\Package\Package;
 use Concrete\Core\Support\Facade\Facade;
 use Concrete\Package\AssetPipeline\Src\FilterProvider;
@@ -23,6 +24,12 @@ class Controller extends Package
     public function getPackageDescription()
     {
         return t("Provides easy to use way to manage and build assets in concrete5.");
+    }
+
+    public function getPackageEntitiesPath()
+    {
+        // Fix installation issues
+        return $this->getPackagePath() . '/' . DIRNAME_CLASSES . '/Entity';
     }
 
     public function install()
