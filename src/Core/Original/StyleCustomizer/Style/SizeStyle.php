@@ -2,6 +2,8 @@
 //namespace Concrete\Core\StyleCustomizer\Style;
 namespace Concrete\Package\AssetPipeline\Src\Core\Original\StyleCustomizer\Style;
 
+use Concrete\Core\StyleCustomizer\Style\Style;
+
 use \Concrete\Core\StyleCustomizer\Style\Value\SizeValue;
 use Less_Tree_Dimension;
 
@@ -63,4 +65,3 @@ class SizeStyle extends Style {
 
 
 }
-

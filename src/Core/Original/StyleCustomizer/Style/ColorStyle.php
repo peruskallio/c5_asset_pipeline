@@ -2,8 +2,10 @@
 //namespace Concrete\Core\StyleCustomizer\Style;
 namespace Concrete\Package\AssetPipeline\Src\Core\Original\StyleCustomizer\Style;
 
+use Concrete\Core\StyleCustomizer\Style\Style;
+use Concrete\Core\StyleCustomizer\Style\Value\ColorValue;
+
 use Core;
-use \Concrete\Core\StyleCustomizer\Style\Value\ColorValue;
 use Less_Tree_Color;
 use Less_Tree_Call;
 use Less_Tree_Dimension;

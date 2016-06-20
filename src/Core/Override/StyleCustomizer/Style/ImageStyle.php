@@ -2,6 +2,7 @@
 
 namespace Concrete\Core\StyleCustomizer\Style;
 
+use Concrete\Core\StyleCustomizer\Style\Value\ImageValue;
 use Concrete\Package\AssetPipeline\Src\Core\Original\StyleCustomizer\Style\ImageStyle as CoreImageStyle;
 use Concrete\Package\AssetPipeline\Src\StyleCustomizer\Style\ExtractableStyleInterface;
 use Concrete\Package\AssetPipeline\Src\StyleCustomizer\Style\Value\ExtractorInterface;

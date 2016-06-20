@@ -64,7 +64,7 @@ class Utility implements UtilityInterface
         foreach ($filters as $key => $flt) {
             if (isset($flt['customizableStyles']) && $flt['customizableStyles'] &&
                     preg_match('#' . str_replace('#', '\#', $flt['applyTo']) . '#', $file)) {
-                if (!$this->appbound('assets/value/extractor/' . $key)) {
+                if (!$this->app->bound('assets/value/extractor/' . $key)) {
                     throw new Exception(t("Value extractor not set for key: %s", $key));
                 }
                 return $this->app->make('assets/value/extractor/' . $key, array($file, $urlroot));

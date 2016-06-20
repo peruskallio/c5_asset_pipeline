@@ -2,6 +2,7 @@
 
 namespace Concrete\Core\StyleCustomizer\Style;
 
+use Concrete\Core\StyleCustomizer\Style\Value\ColorValue;
 use Concrete\Package\AssetPipeline\Src\Core\Original\StyleCustomizer\Style\ColorStyle as CoreColorStyle;
 use Concrete\Package\AssetPipeline\Src\StyleCustomizer\Style\ExtractableStyleInterface;
 use Concrete\Package\AssetPipeline\Src\StyleCustomizer\Style\Value\ExtractorInterface;

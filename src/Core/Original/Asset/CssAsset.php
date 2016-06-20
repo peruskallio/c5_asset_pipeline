@@ -3,6 +3,8 @@
 //namespace Concrete\Core\Asset;
 namespace Concrete\Package\AssetPipeline\Src\Core\Original\Asset;
 
+use Concrete\Core\Asset\Asset;
+
 use Concrete\Core\Html\Object\HeadLink;
 use Config;
 

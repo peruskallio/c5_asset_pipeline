@@ -10,7 +10,7 @@ class Less extends AbstractExtractor
 {
 
     /** @var array */
-    protected $rules = array();
+    protected $rules;
 
     /**
      * {@inheritDoc}

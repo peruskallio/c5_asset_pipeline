@@ -2,6 +2,8 @@
 //namespace Concrete\Core\StyleCustomizer\Style;
 namespace Concrete\Package\AssetPipeline\Src\Core\Original\StyleCustomizer\Style;
 
+use Concrete\Core\StyleCustomizer\Style\Style;
+
 use \Concrete\Core\StyleCustomizer\Style\Value\ImageValue;
 use Less_Environment;
 use File;

@@ -2,6 +2,8 @@
 //namespace Concrete\Core\StyleCustomizer\Style;
 namespace Concrete\Package\AssetPipeline\Src\Core\Original\StyleCustomizer\Style;
 
+use Concrete\Core\StyleCustomizer\Style\Style;
+
 use \Concrete\Core\StyleCustomizer\Style\Value\TypeValue;
 use \Concrete\Core\StyleCustomizer\Style\Value\ColorValue;
 use \Concrete\Core\StyleCustomizer\Style\ColorStyle;
