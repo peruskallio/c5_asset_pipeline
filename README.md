@@ -41,6 +41,65 @@ This is an instance of `Concrete\Package\AssetPipeline\Src\Service\Assets` and
 you can call any methods available in that class by calling them against this
 object in your theme's view files.
 
+Note that you will need to include a file in from your base template file
+(such as `default.php`) because otherwise the `$assets` variable is not
+available. This is because of the way this variable is made available to the
+view. Usually, the parts where you need to call the `$assets` variable are
+separated into specific template element files, so this should not be a
+problem.
+
+As an example, this **does not** work:
+
+default.php:
+
+```php
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- This will result in error -->
+    <?php $assets->css(array('main.scss')) ?>
+    <?php Loader::element('header_required') ?>
+</head>
+<body>
+    <p>Page</p>
+    <?php Loader::element('footer_required') ?>
+</body>
+</html>
+```
+
+Instead, this is how you can use the `$assets` variable properly:
+
+default.php:
+
+```php
+<!-- default.php -->
+<?php $this->inc('elements/header.php') ?>
+<p>Page</p>
+<?php $this->inc('elements/footer.php') ?>
+```
+
+elements/header.php:
+
+```php
+<!-- elements/header.php -->
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- This will work properly -->
+    <?php $assets->css(array('main.scss')) ?>
+    <?php Loader::element('header_required') ?>
+</head>
+<body>
+```
+
+elements/footer.php:
+
+```php
+<?php Loader::element('footer_required') ?>
+</body>
+</html>
+```
+
 ### Example theme
 
 Example theme that is built with the Asset Pipeline can be found from
