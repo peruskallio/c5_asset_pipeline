@@ -57,7 +57,7 @@ default.php:
 <html>
 <head>
     <!-- This will result in error -->
-    <?php $assets->css(array('main.scss')) ?>
+    <?php echo $assets->css(array('main.scss')) ?>
     <?php Loader::element('header_required') ?>
 </head>
 <body>
@@ -72,7 +72,6 @@ Instead, this is how you can use the `$assets` variable properly:
 default.php:
 
 ```php
-<!-- default.php -->
 <?php $this->inc('elements/header.php') ?>
 <p>Page</p>
 <?php $this->inc('elements/footer.php') ?>
@@ -81,12 +80,11 @@ default.php:
 elements/header.php:
 
 ```php
-<!-- elements/header.php -->
 <!DOCTYPE html>
 <html>
 <head>
     <!-- This will work properly -->
-    <?php $assets->css(array('main.scss')) ?>
+    <?php echo $assets->css(array('main.scss')) ?>
     <?php Loader::element('header_required') ?>
 </head>
 <body>
