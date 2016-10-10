@@ -124,7 +124,7 @@ class PackageServiceProvider extends ServiceProvider
     {
         // Core overrides
         $dir = DIR_PACKAGES . '/' . $this->pkgHandle;
-        $loader = new MapClassLoader(array(
+        $overrides = array(
             'Concrete\\Core\\Asset\\CssAsset'
                 => $dir . '/src/Core/Override/Asset/CssAsset.php',
             'Concrete\\Core\\Asset\\JavascriptAsset'
@@ -145,7 +145,17 @@ class PackageServiceProvider extends ServiceProvider
                 => $dir . '/src/Core/Override/StyleCustomizer/Style/TypeStyle.php',
             'Concrete\\Core\\StyleCustomizer\\Style\\ValueList'
                 => $dir . '/src/Core/Override/StyleCustomizer/Style/ValueList.php',
-        ));
+        );
+        foreach ($overrides as $cls => $file) {
+            if (class_exists($cls, false)) {
+                // Most likely the core classes have already been loaded, e.g.
+                // through the Doctrine entity loader. In these situations, we
+                // cannot do the overrides.
+                return false;
+            }
+        }
+
+        $loader = new MapClassLoader($overrides);
         $loader->register(true);
 
         // For some reason this has to be called MANUALLY (and not through the
@@ -153,6 +163,8 @@ class PackageServiceProvider extends ServiceProvider
         // otherwise calling the alias directly will cause the original core
         // class to be loaded for some reason.
         class_alias('Concrete\\Core\\Page\\Theme\\Theme', 'PageTheme');
+
+        return true;
     }
 
 }
