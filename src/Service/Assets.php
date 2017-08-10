@@ -85,6 +85,16 @@ class Assets
         return $this->compileCssToCache($assets, $options);
     }
 
+    /**
+     * Alias for the method javascript
+     *
+     * @param array $assets
+     * @param array $options
+     */
+    public function js($assets, array $options = null){
+        return $this->javascript($assets, $options);
+    }
+
     public function javascript($assets, array $options = null)
     {
         $path = $this->javascriptPath($assets, $options);
