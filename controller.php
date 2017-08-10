@@ -30,12 +30,6 @@ class Controller extends Package
         'src' => '\Concrete\Package\AssetPipeline\Src',
     );
 
-    public function getPackageEntitiesPath()
-    {
-        // Fix installation issues
-        return $this->getPackagePath() . '/' . DIRNAME_CLASSES . '/Entity';
-    }
-
     public function install()
     {
         $fs = new Filesystem();
