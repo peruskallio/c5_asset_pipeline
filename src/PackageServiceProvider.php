@@ -126,11 +126,11 @@ class PackageServiceProvider extends ServiceProvider
         $dir = DIR_PACKAGES . '/' . $this->pkgHandle;
         $overrides = array(
             'Concrete\\Core\\Asset\\CssAsset'
-                => $dir . '/src/Core/Override/Asset/CssAsset.php',
+                => $dir . '/src/Core/Override/Asset/CssAssetOvrd.php',
             'Concrete\\Core\\Asset\\JavascriptAsset'
-                => $dir . '/src/Core/Override/Asset/JavascriptAsset.php',
+                => $dir . '/src/Core/Override/Asset/JavascriptAssetOvrd.php',
             'Concrete\\Core\\Page\\Theme\\Theme'
-                => $dir . '/src/Core/Override/Page/Theme/Theme.php',
+                => $dir . '/src/Core/Override/Page/Theme/ThemeOvrd.php',
             'Concrete\\Core\\StyleCustomizer\\Preset'
                 => $dir . '/src/Core/Override/StyleCustomizer/Preset.php',
             'Concrete\\Core\\StyleCustomizer\\Stylesheet'

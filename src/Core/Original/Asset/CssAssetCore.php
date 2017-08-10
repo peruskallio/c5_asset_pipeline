@@ -8,7 +8,7 @@ use Concrete\Core\Asset\Asset;
 use Concrete\Core\Html\Object\HeadLink;
 use Config;
 
-class CssAsset extends Asset
+class CssAssetCore extends Asset
 {
     /**
      * @var bool

@@ -3,9 +3,9 @@
 namespace Concrete\Core\Asset;
 
 use Concrete\Core\Support\Facade\Facade;
-use Concrete\Package\AssetPipeline\Src\Core\Original\Asset\CssAsset as CoreCssAsset;
+use Concrete\Package\AssetPipeline\Src\Core\Original\Asset\CssAssetCore;
 
-class CssAsset extends CoreCssAsset
+class CssAssetOvrd extends CssAssetCore
 {
 
     /**
@@ -37,7 +37,7 @@ class CssAsset extends CoreCssAsset
             ));
             $assetDir = Config::get('concrete.cache.directory');
 
-            $asset = new CssAsset();
+            $asset = new self();
             $asset->setAssetURL($relativePath);
             $asset->setAssetPath($assetDir . $relativePath);
             $asset->setCombinedAssetSourceFiles($sourceFiles);

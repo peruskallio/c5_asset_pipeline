@@ -5,7 +5,7 @@ namespace Concrete\Core\Asset;
 use Concrete\Package\AssetPipeline\Src\Core\Original\Asset\JavascriptAsset as CoreJavascriptAsset;
 use Config;
 
-class JavascriptAsset extends CoreJavascriptAsset
+class JavascriptAssetOvrd extends CoreJavascriptAsset
 {
 
     /**

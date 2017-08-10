@@ -20,7 +20,7 @@ class FilterProvider extends ServiceProvider
         $config = $this->app->make('config');
 
         // Register Less filter & variable value extractor
-        $this->app->bind('assets/filter/less', function ($app, $assets) use ($config) {
+        $this->app->bind('assets/filter/less', function ($app, $options) use ($config) {
             $lessf = new LessphpFilter(
                 array(
                     'cache_dir' => $config->get('concrete.cache.directory'),
@@ -32,6 +32,8 @@ class FilterProvider extends ServiceProvider
                 $lessf->setBasePath('/' . ltrim($app['app_relative_path'], '/'));
                 $lessf->setRelativeUrlPaths(true);
             }
+
+            $assets = $options['assets'];
 
             $variableList = $assets->getStyleSheetVariables();
             if (is_array($variableList)) {
@@ -49,7 +51,10 @@ class FilterProvider extends ServiceProvider
         });
 
         // Register SCSS filter & variable value extractor
-        $this->app->bind('assets/filter/scss', function ($app, $assets) use ($config) {
+        $this->app->bind('assets/filter/scss', function ($app, $options) use ($config) {
+
+            $assets = $options['assets'];
+
             // There does not seem to be a way to get the source maps to the
             // ScssPhp at the moment:
             // https://github.com/leafo/scssphp/issues/135
@@ -76,13 +81,19 @@ class FilterProvider extends ServiceProvider
         });
 
         // Register JShrink filter
-        $this->app->bind('assets/filter/jshrink', function ($app, $assets) {
+        $this->app->bind('assets/filter/jshrink', function ($app, $options) {
+
+            $assets = $options['assets'];
+
             $jsf = new JShrinkFilter();
             return $jsf;
         });
 
         // Register CssMin filter
-        $this->app->bind('assets/filter/cssmin', function ($app, $assets) {
+        $this->app->bind('assets/filter/cssmin', function ($app, $options) {
+
+            $assets = $options['assets'];
+
             $cmf = new CssMinFilter();
             return $cmf;
         });

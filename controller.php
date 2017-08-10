@@ -13,8 +13,8 @@ class Controller extends Package
 {
 
     protected $pkgHandle = 'asset_pipeline';
-    protected $appVersionRequired = '5.7.1';
-    protected $pkgVersion = '0.0.1';
+    protected $appVersionRequired = '8.0.0';
+    protected $pkgVersion = '0.0.2';
 
     public function getPackageName()
     {
@@ -26,11 +26,9 @@ class Controller extends Package
         return t("Provides easy to use way to manage and build assets in concrete5.");
     }
 
-    public function getPackageEntitiesPath()
-    {
-        // Fix installation issues
-        return $this->getPackagePath() . '/' . DIRNAME_CLASSES . '/Entity';
-    }
+    protected $pkgAutoloaderRegistries = array(
+        'src' => '\Concrete\Package\AssetPipeline\Src',
+    );
 
     public function install()
     {
@@ -39,6 +37,7 @@ class Controller extends Package
             throw new Exception(t("You need to install the composer packages for this add-on before installation!"));
         }
 
+        $this->loadDependencies();
         $pkg = parent::install();
     }
 

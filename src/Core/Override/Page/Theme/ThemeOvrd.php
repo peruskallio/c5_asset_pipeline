@@ -8,7 +8,7 @@ use Core;
 use Environment;
 use Loader;
 
-class Theme extends CoreTheme
+class ThemeOvrd extends CoreTheme
 {
 
     const THEME_CUSTOMIZABLE_STYLESHEET_EXTENSION = '.less';

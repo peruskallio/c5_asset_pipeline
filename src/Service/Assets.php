@@ -85,6 +85,16 @@ class Assets
         return $this->compileCssToCache($assets, $options);
     }
 
+    /**
+     * Alias for the method javascript
+     *
+     * @param array $assets
+     * @param array $options
+     */
+    public function js($assets, array $options = null){
+        return $this->javascript($assets, $options);
+    }
+
     public function javascript($assets, array $options = null)
     {
         $path = $this->javascriptPath($assets, $options);
@@ -192,12 +202,13 @@ class Assets
         $fm = $factory->getFilterManager();
         $assets = new AssetCollection();
 
-        // Set the filters to he filter manager
+        // Set the filters to the filter manager
         foreach ($fsr->getAllFilterSettings() as $key => $flt) {
             if (!$this->app->bound('assets/filter/' . $key)) {
                 throw new Exception(t("Filter not available for key: %s", $key));
             }
-            $fm->set($key, $this->app->make('assets/filter/' . $key, $this));
+            $filter = $this->app->make('assets/filter/' . $key, array('assets' => $this));
+            $fm->set($key, $filter);
         }
 
         // Create the asset and push it into the AssetCollection
