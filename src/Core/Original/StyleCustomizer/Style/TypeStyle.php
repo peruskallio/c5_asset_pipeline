@@ -6,9 +6,9 @@ use Concrete\Core\StyleCustomizer\Style\Style;
 
 use \Concrete\Core\StyleCustomizer\Style\Value\TypeValue;
 use \Concrete\Core\StyleCustomizer\Style\Value\ColorValue;
-use \Concrete\Core\StyleCustomizer\Style\ColorStyle;
+use \Concrete\Core\StyleCustomizer\Style\ColorStyle as ColorStyleOrg;
 use \Concrete\Core\StyleCustomizer\Style\Value\SizeValue;
-use \Concrete\Core\StyleCustomizer\Style\SizeStyle;
+use \Concrete\Core\StyleCustomizer\Style\SizeStyle as SizeStyleOrg;
 
 use Core;
 
@@ -174,7 +174,7 @@ class TypeStyle extends Style {
                     $values[$matches[1]] = new TypeValue($matches[1]);
                 }
                 $value = $rule->value->value[0]->value[0];
-                $cv = ColorStyle::parse($value);
+                $cv = ColorStyleOrg::parse($value);
                 if ($cv instanceof ColorValue) {
                     $values[$matches[1]]->setColor($cv);
                 }
@@ -185,7 +185,7 @@ class TypeStyle extends Style {
                     $values[$matches[1]] = new TypeValue($matches[1]);
                 }
                 $value = $rule->value->value[0]->value[0];
-                $sv = SizeStyle::parse($value);
+                $sv = SizeStyleOrg::parse($value);
                 if ($sv instanceof SizeValue) {
                     $values[$matches[1]]->setFontSize($sv);
                 }
@@ -196,7 +196,7 @@ class TypeStyle extends Style {
                     $values[$matches[1]] = new TypeValue($matches[1]);
                 }
                 $value = $rule->value->value[0]->value[0];
-                $sv = SizeStyle::parse($value);
+                $sv = SizeStyleOrg::parse($value);
                 if ($sv instanceof SizeValue) {
                     $values[$matches[1]]->setLetterSpacing($sv);
                 }
@@ -207,7 +207,7 @@ class TypeStyle extends Style {
                     $values[$matches[1]] = new TypeValue($matches[1]);
                 }
                 $value = $rule->value->value[0]->value[0];
-                $sv = SizeStyle::parse($value);
+                $sv = SizeStyleOrg::parse($value);
                 if ($sv instanceof SizeValue) {
                     $values[$matches[1]]->setLineHeight($sv);
                 }
